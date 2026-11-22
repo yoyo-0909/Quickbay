@@ -551,4 +551,5 @@ loadWorkshopDirectory=async function(){
 function toggleSavedWorkshop(id){let saved=store.get('saved_workshops',[]);saved=saved.includes(id)?saved.filter(x=>x!==id):saved.concat(id);store.set('saved_workshops',saved);toast(saved.includes(id)?'Workshop saved.':'Workshop removed from saved list.');loadWorkshopDirectory();}
 </script>
 <script src="/workflows.js"></script>
+<script src="/support.js"></script>
 </body></html>
