@@ -17,8 +17,7 @@ BBOXES = [(6.0, 68.0, 37.2, 97.5), (6.5, 92.0, 14.0, 97.5)]
 TILE = 1.5
 TAGS = [
     ('shop', 'car_repair'), ('craft', 'car_repair'), ('craft', 'car_mechanic'),
-    ('craft', 'car_painter'), ('shop', 'tyres'), ('shop', 'car'),
-    ('amenity', 'car_wash')
+    ('craft', 'car_painter'), ('shop', 'tyres'), ('amenity', 'car_wash')
 ]
 FIELDS = ['source_record_id','osm_type','osm_id','name','category','latitude','longitude',
           'address','locality','city','district','state','pincode','phone','website',
