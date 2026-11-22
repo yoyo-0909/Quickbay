@@ -15,6 +15,8 @@ The live database already contains the core schema from migrations `0001` throug
 - `0010_rls_initplan_and_fk_indexes.sql`: optimises `auth.uid()` evaluation in policies and adds missing foreign-key indexes.
 - `0011_support_and_saved_workshops.sql`: adds private support tickets/messages and account-level saved workshop references.
 - `0012_private_workshop_reviews.sql`: adds private customer feedback and admin moderation; reviews are not published.
+- `0013_booking_reschedule_and_fk_indexes.sql`: adds customer rescheduling permissions and the remaining support foreign-key indexes.
+- `0014_admin_catalogues.sql`: adds admin-managed service categories and an initially empty vehicle catalogue.
 
 Do not reapply the original core migrations to an already-provisioned database. Apply future migrations in order and verify them before connecting new UI workflows.
 
