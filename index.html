@@ -227,7 +227,7 @@ function updateAccountDetails(profile,user){
 }
 function shell(){
  const nav=menus[mode],primary=nav.slice(0,4),extra=nav.slice(4);
- const makeButton=([n,i],extraItem=false)=>'<button type="button" class="'+(page===n?'active ':'')+(extraItem?'mobile-extra':'mobile-primary')+'" onclick="go('+JSON.stringify(n)+')"><span class="ic">'+i+'</span><span class="txt">'+n+'</span></button>';
+ const makeButton=([n,i],extraItem=false)=>{const safePage=String(n).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');return '<button type="button" class="'+(page===n?'active ':'')+(extraItem?'mobile-extra':'mobile-primary')+'" data-qb-page="'+safePage+'"><span class="ic">'+i+'</span><span class="txt">'+n+'</span></button>';};
  $('#nav').innerHTML=nav.map((item,index)=>makeButton(item,index>=4)).join('')+(extra.length?'<button type="button" class="nav-more '+(extra.some(([n])=>n===page)?'active':'')+'" id="navMore" onclick="toggleMobileMore()" aria-expanded="false" aria-controls="navMorePanel"><span class="ic">•••</span><span class="txt">More</span></button><div class="nav-more-panel" id="navMorePanel">'+extra.map(item=>makeButton(item,true)).join('')+'</div>':'');
  $('#crumb').textContent=page;
 }
