@@ -7,7 +7,7 @@ The application now includes an authentication screen wired to Supabase Auth whe
 1. Connect the Supabase integration in ChatGPT when prompted, or create a Supabase project at https://supabase.com/dashboard.
 2. Apply migrations in order:
    - `supabase/migrations/0001_quickbay_core.sql`
-   - `supabase/migrations/0002_directory_and_workflow.sql`
+   - `supabase/migrations/0002_directory_and_workflow.sql`\n   - `supabase/migrations/0003_booking_concurrency.sql`
 3. In Supabase Auth settings, enable email/password and set the site URL to `https://quickbay.vercel.app`.
 4. Put the project's URL and anon/publishable key in the public `config.js` file. Never put the service-role key in frontend code.
 5. Configure the Vercel production deployment to serve the updated `config.js`.
