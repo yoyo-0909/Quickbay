@@ -44,7 +44,7 @@
   modal('Add a vehicle','Choose your car brand, model and manufacturing year.',
    '<form onsubmit="saveVehicle(event)"><div class="qb-vehicle-grid">'+
    '<label class="full">Car brand<select class="field" name="make" required onchange="qbUpdateVehicleModels(this.value)"><option value="">Select car brand</option>'+makes.map(m=>'<option value="'+qbSafe(m)+'">'+qbSafe(m)+'</option>').join('')+'</select></label>'+
-   '<label class="full">Car model<select class="field" id="qbVehicleModel" name="model" required><option value="">Select brand first</option></select></label>'+
+   '<label class="full">Car model<select class="field" id="qbVehicleModel" name="model_pick" required onchange="qbToggleCustomModel(this.value)"><option value="">Select brand first</option></select></label><label class="full" id="qbCustomModelWrap" style="display:none">Enter your model<input class="field" id="qbCustomModel" name="model_custom" placeholder="Type your vehicle model"></label>'+
    '<label>Manufacturing year<select class="field" name="year" required onchange="qbUpdateVehicleAge(this.value)"><option value="">Select year</option>'+years.map(y=>'<option value="'+y+'">'+y+'</option>').join('')+'</select><small id="qbVehicleAge" class="qb-location-status">Select a manufacturing year</small></label>'+
    '<label>Variant<input class="field" name="variant" placeholder="e.g. ZXi, SX(O), EV LR"></label>'+
    '<label class="full">Registration number<input class="field" name="reg" placeholder="TN 00 AB 1234"></label>'+
