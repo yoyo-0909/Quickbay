@@ -32,3 +32,10 @@ The service-role key is server-only. Never place it in `config.js`, browser code
 
 ## Initial pilot
 Start with Tiruvallur and nearby localities, measure actual coverage and validate sample records with workshop calls/claims. Expand district-by-district after quality checks. Never pad coverage with generated businesses or inferred ratings.
+
+## Commercial dataset candidates (not acquired)
+Public vendor pages advertise large India-wide automotive datasets that may meet the numerical target, but the dataset files and contractual reuse rights are not included here:
+- Auspector advertises 332,252 auto-repair-shop records in its India business catalogue.
+- LeadSetu advertises 60,186 car and bike garage records in its service-centre category and offers access on request.
+
+These are vendor-stated counts, not verified QuickBay records. Before purchase/import, obtain a sample and written confirmation of the rights to store, display, index, update, and use the data commercially; check whether contact details, ratings, reviews and map coordinates have separate restrictions. Do not import until approved by the data owner/license.
