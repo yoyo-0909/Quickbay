@@ -5,7 +5,118 @@
 @media(max-width:900px){.app{grid-template-columns:76px 1fr}.sidebar{padding:22px 9px}.logo{font-size:0;text-align:center;padding:0}.logo:after{content:"Q";font-size:25px}.tagline,.navlabel,.nav button .txt,.sidefoot{display:none}.mode{font-size:0;padding:10px}.mode:after{content:"⇄";font-size:17px}.nav button{justify-content:center;padding:13px}.nav .ic{font-size:19px}.content{padding:25px 20px}.topbar{padding:0 20px}.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.app{display:block;padding-bottom:64px}.sidebar{position:fixed;z-index:10;top:auto;bottom:0;height:62px;width:100%;padding:5px 8px;display:flex;flex-direction:row;align-items:center;justify-content:space-around}.logo,.tagline,.mode,.sidefoot,.navlabel{display:none}.nav{display:flex;width:100%;justify-content:space-around;gap:0}.nav button{padding:9px 11px;display:grid;gap:2px;justify-items:center;font-size:9px}.nav button .txt{display:block;font-size:9px}.nav .ic{font-size:17px}.topbar{height:60px;padding:0 15px}.content{padding:21px 14px 30px}.pagehead{align-items:flex-start;flex-direction:column}.pagehead h1{font-size:26px}.hero{grid-template-columns:1fr;padding:25px}.hero h2{font-size:30px}.heroart{display:none}.stats{gap:9px}.card{padding:15px}.statnum{font-size:24px}.layout2{grid-template-columns:1fr}.workshop{grid-template-columns:45px 1fr}.shopicon{width:45px;height:45px}.workshop .actions{grid-column:2;display:flex;gap:6px}.workshop .actions .btn{padding:9px}.quicklinks{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.topright .pill{display:none}.mapbox{height:260px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
-.authgate{position:fixed;inset:0;background:#080808;z-index:80;display:grid;place-items:center;padding:20px;color:#111}.authlayout{width:min(980px,100%);min-height:590px;background:#fff;border-radius:24px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;box-shadow:0 30px 100px #0008}.authbrand{background:#080808;color:#fff;padding:42px;display:flex;flex-direction:column;justify-content:space-between}.authbrand h1{font-size:42px;letter-spacing:-2px;line-height:1.06;margin:22px 0}.authbrand p{color:#aaa;line-height:1.7;max-width:340px}.authbrand .logo{padding:0;font-size:27px}.authform{padding:42px;display:flex;flex-direction:column;justify-content:center}.authform h2{font-size:27px;letter-spacing:-1px;margin:0 0 7px}.authform .field{width:100%;margin-top:6px}.authform label{display:block;font-size:11px;color:#666;margin:14px 0}.authswitch{display:flex;gap:8px;margin:20px 0 5px}.authswitch button{padding:9px 13px;border-radius:30px;background:#eee;font-size:11px}.authswitch button.active{background:#111;color:#fff}.authmessage{font-size:11px;line-height:1.6;color:#666;background:#f2f2f2;padding:11px;border-radius:10px;margin:12px 0}.autherror{color:#a22;background:#fff0f0}.authactions{display:grid;gap:10px;margin-top:10px}.authfine{font-size:10px;color:#888;line-height:1.5;margin-top:17px}.authhidden{display:none!important}@media(max-width:680px){.authlayout{grid-template-columns:1fr;min-height:0}.authbrand{padding:24px;min-height:180px}.authbrand h1{font-size:28px;margin:12px 0}.authbrand p{display:none}.authform{padding:26px}.authbrand .logo{font-size:23px}}</style></head><body>
+.authgate{position:fixed;inset:0;background:#080808;z-index:80;display:grid;place-items:center;padding:20px;color:#111}.authlayout{width:min(980px,100%);min-height:590px;background:#fff;border-radius:24px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;box-shadow:0 30px 100px #0008}.authbrand{background:#080808;color:#fff;padding:42px;display:flex;flex-direction:column;justify-content:space-between}.authbrand h1{font-size:42px;letter-spacing:-2px;line-height:1.06;margin:22px 0}.authbrand p{color:#aaa;line-height:1.7;max-width:340px}.authbrand .logo{padding:0;font-size:27px}.authform{padding:42px;display:flex;flex-direction:column;justify-content:center}.authform h2{font-size:27px;letter-spacing:-1px;margin:0 0 7px}.authform .field{width:100%;margin-top:6px}.authform label{display:block;font-size:11px;color:#666;margin:14px 0}.authswitch{display:flex;gap:8px;margin:20px 0 5px}.authswitch button{padding:9px 13px;border-radius:30px;background:#eee;font-size:11px}.authswitch button.active{background:#111;color:#fff}.authmessage{font-size:11px;line-height:1.6;color:#666;background:#f2f2f2;padding:11px;border-radius:10px;margin:12px 0}.autherror{color:#a22;background:#fff0f0}.authactions{display:grid;gap:10px;margin-top:10px}.authfine{font-size:10px;color:#888;line-height:1.5;margin-top:17px}.authhidden{display:none!important}@media(max-width:680px){.authlayout{grid-template-columns:1fr;min-height:0}.authbrand{padding:24px;min-height:180px}.authbrand h1{font-size:28px;margin:12px 0}.authbrand p{display:none}.authform{padding:26px}.authbrand .logo{font-size:23px}}
+/* QuickBay × Quillion GPT visual system */
+:root{
+  --qb-purple:#7957ff;--qb-blue:#3978ff;--qb-ink:#101114;--qb-bg:#f6f7fb;
+  --qb-muted:#737687;--qb-line:#e9eaf2;--qb-lilac:#f0edff;--qb-shadow:0 12px 36px rgba(25,24,55,.055);
+  --black:var(--qb-ink);--dark:#171820;--bg:var(--qb-bg);--muted:var(--qb-muted);--line:var(--qb-line);--soft:#f2f3f8;
+}
+html{scroll-behavior:smooth}
+body{background:var(--qb-bg);color:var(--qb-ink);font-family:'Plus Jakarta Sans',Inter,system-ui,sans-serif;letter-spacing:-.01em}
+button,input,select,textarea{font-family:inherit}
+::selection{background:#ded6ff;color:#24145e}
+.sidebar{background:linear-gradient(180deg,#111218 0%,#171824 100%);border-right:1px solid rgba(255,255,255,.06);box-shadow:8px 0 30px rgba(18,17,38,.035);padding:29px 17px;gap:25px}
+.logo{font-size:25px;letter-spacing:-1.5px;font-weight:800}
+.logo span{color:#a995ff}
+.tagline{color:#9995ad;letter-spacing:1.45px;font-size:9px}
+.mode{background:#222331;border:1px solid #373747;border-radius:12px;color:#f5f3ff;padding:12px}
+.navlabel{color:#8b899b;letter-spacing:1.5px}
+.nav{gap:7px}
+.nav button{color:#aaa9b9;border-radius:12px;padding:12px 13px;transition:background .2s,color .2s,transform .2s}
+.nav button:hover{background:rgba(255,255,255,.07);color:#fff;transform:translateX(2px)}
+.nav button.active{background:linear-gradient(100deg,rgba(121,87,255,.25),rgba(57,120,255,.12));color:#fff;box-shadow:inset 3px 0 0 var(--qb-purple)}
+.nav button.active .ic{color:#b8a7ff}
+.nav .ic{font-size:17px}
+.sidefoot{border-color:rgba(255,255,255,.1);color:#9694a5}
+.main{background:var(--qb-bg)}
+.topbar{height:78px;background:rgba(255,255,255,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(225,226,236,.85);padding:0 38px}
+.crumb{font-size:13px;color:#77788a;font-weight:600}
+.topright{gap:13px}
+.pill{background:#f6f4ff;border:1px solid #e7e1ff;color:#6d55ce;font-weight:700}
+.avatar{background:linear-gradient(135deg,var(--qb-purple),var(--qb-blue));box-shadow:0 5px 14px rgba(121,87,255,.24)}
+.content{max-width:1480px;padding:36px 40px 76px}
+.eyebrow{color:#8170d7;letter-spacing:1.55px;font-size:9px}
+.pagehead{margin-bottom:28px}
+.pagehead h1{font-size:32px;letter-spacing:-1.55px;font-weight:800;color:var(--qb-ink)}
+.sub{color:#77798a;font-size:12px}
+.btn{background:linear-gradient(105deg,var(--qb-purple),#684cff 55%,var(--qb-blue));color:#fff;border-radius:11px;padding:12px 18px;font-weight:700;box-shadow:0 7px 17px rgba(121,87,255,.18);transition:transform .2s,box-shadow .2s,filter .2s}
+.btn:hover{background:linear-gradient(105deg,#6d49f3,#4b6ff5);transform:translateY(-2px);box-shadow:0 10px 22px rgba(121,87,255,.25)}
+.btn.light{background:#fff;color:#5140a5;border:1px solid #e4defd;box-shadow:none}
+.btn.light:hover{background:#f7f5ff;border-color:#cfc4ff}
+.btn.outline{background:transparent;color:#6150b2;border:1px solid #d9d2f7;box-shadow:none}
+.btn:focus-visible,.nav button:focus-visible,.tab:focus-visible{outline:3px solid rgba(121,87,255,.25);outline-offset:2px}
+.grid{gap:17px}
+.card{background:#fff;border:1px solid #ececf4;border-radius:19px;padding:21px;box-shadow:var(--qb-shadow);transition:transform .2s,border-color .2s,box-shadow .2s}
+.statlabel{font-size:10px;color:#858698;font-weight:700;letter-spacing:.35px}
+.statnum{font-size:30px;color:#171821;font-weight:800;letter-spacing:-1.3px}
+.statnote{color:#8c8d9c;font-size:10px}
+.sectiontitle{font-size:14px;color:#20212b}
+.searchbox{border:1px solid #e7e5f2;border-radius:14px;box-shadow:0 4px 16px rgba(25,24,55,.025)}
+.searchbox:focus-within{border-color:#b9aaff;box-shadow:0 0 0 4px rgba(121,87,255,.08)}
+.field,select,textarea{border-color:#e4e5ee;border-radius:11px;color:#262735}
+.field:focus,select:focus,textarea:focus{border-color:var(--qb-purple);box-shadow:0 0 0 4px rgba(121,87,255,.09)}
+.workshop{border-color:#ececf4;border-radius:17px;box-shadow:0 6px 20px rgba(25,24,55,.035);transition:transform .2s,box-shadow .2s,border-color .2s}
+.workshop:hover{transform:translateY(-2px);border-color:#d9d1ff;box-shadow:0 12px 28px rgba(55,43,120,.08)}
+.shopicon{background:linear-gradient(145deg,#f0edff,#eaf1ff);color:#7255e8;border-radius:15px}
+.tag{background:#f1efff;color:#6d57bd;font-weight:700}
+.status{background:#f1f2f7;color:#6d7080}
+.status.good{background:#e9f8f0;color:#218456}
+.status.warn{background:#fff5e7;color:#a86a16}
+.hero{background:radial-gradient(circle at 82% 16%,rgba(121,87,255,.52),transparent 32%),linear-gradient(118deg,#151321 0%,#29204e 55%,#1d376a 100%);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:38px;box-shadow:0 18px 45px rgba(43,31,93,.15)}
+.hero h2{font-size:38px;letter-spacing:-2px;max-width:620px}
+.hero p{color:#d0cce0}
+.hero .eyebrow{color:#c4b8ff}
+.heroart{font-size:104px;filter:drop-shadow(0 18px 20px rgba(0,0,0,.2))}
+.quicklink{border-color:#ececf4;border-radius:17px;box-shadow:0 7px 22px rgba(25,24,55,.035);transition:transform .2s,border-color .2s}
+.quicklink:hover{transform:translateY(-3px);border-color:#d7ceff}
+.quicklink span{color:var(--qb-purple)}
+.empty{border:1px dashed #d8d5e8;border-radius:17px;background:linear-gradient(180deg,#fff,#fbfaff)}
+.empty .big{color:var(--qb-purple)}
+.tabs{gap:8px}
+.tab{background:#eeedf5;color:#68697b;border-radius:30px;font-weight:700}
+.tab.active{background:#eeeaff;color:#684bd3;box-shadow:inset 0 0 0 1px #ddd5ff}
+.tablewrap{border-color:#ececf4;border-radius:16px;box-shadow:var(--qb-shadow)}
+th{background:#f8f8fc;color:#858698;letter-spacing:.5px}
+td{color:#464756}
+.step:not(:last-child):before{background:#e1def0}
+.dot{border-color:#c9c4dd}
+.step.done .dot{background:var(--qb-purple);border-color:var(--qb-purple);box-shadow:inset 0 0 0 5px white}
+.notice{background:#f1efff;border:1px solid #e7e1ff;color:#665c8c;border-radius:13px}
+.notice strong{color:#45328d}
+.modal{border:1px solid #eeecf7;border-radius:22px;box-shadow:0 24px 80px rgba(18,16,44,.2)}
+.modalback{backdrop-filter:blur(5px)}
+.toast{background:#171522;border:1px solid rgba(255,255,255,.1);box-shadow:0 12px 32px rgba(0,0,0,.18);border-radius:13px}
+.authgate{background:radial-gradient(circle at 15% 15%,rgba(121,87,255,.24),transparent 30%),radial-gradient(circle at 90% 85%,rgba(57,120,255,.2),transparent 32%),#101114}
+.authlayout{border:1px solid rgba(255,255,255,.35);border-radius:26px;box-shadow:0 35px 100px rgba(0,0,0,.35)}
+.authbrand{background:radial-gradient(circle at 82% 20%,rgba(121,87,255,.45),transparent 35%),linear-gradient(145deg,#151321,#24204a 65%,#1b315d);padding:48px}
+.authbrand .logo span{color:#b8a7ff}
+.authbrand h1{font-size:44px;letter-spacing:-2.4px}
+.authbrand p{color:#cbc8da}
+.authform{padding:48px}
+.authform h2{font-size:29px;letter-spacing:-1.25px}
+.authswitch button{border-radius:30px;background:#f0eff6;color:#66677a;font-weight:700}
+.authswitch button.active{background:#eeeaff;color:#684bd3;box-shadow:inset 0 0 0 1px #ddd5ff}
+.authmessage{background:#f4f2ff;color:#6d6099;border:1px solid #e8e2ff;border-radius:12px}
+.autherror{background:#fff0f0;color:#a22}
+@media(max-width:900px){
+  .sidebar{padding:22px 9px}
+  .content{padding:29px 22px 64px}
+  .topbar{padding:0 23px}
+}
+@media(max-width:620px){
+  .content{padding:22px 14px 30px}
+  .topbar{height:64px;padding:0 15px}
+  .sidebar{background:rgba(18,18,27,.97);backdrop-filter:blur(18px);box-shadow:0 -8px 28px rgba(20,18,50,.14);border-top:1px solid rgba(255,255,255,.1)}
+  .nav button.active{background:rgba(121,87,255,.24);box-shadow:inset 0 2px 0 var(--qb-purple)}
+  .hero{padding:26px;border-radius:20px}
+  .hero h2{font-size:31px}
+  .stats{gap:10px}
+  .card{border-radius:16px}
+  .authbrand{padding:26px;background:radial-gradient(circle at 85% 20%,rgba(121,87,255,.42),transparent 38%),linear-gradient(145deg,#151321,#24204a 65%,#1b315d)}
+  .authform{padding:27px}
+}
+</style></head><body>
 <div class="authgate" id="authgate"><div class="authlayout"><section class="authbrand"><div><div class="logo">Quick<span>Bay</span></div><div class="eyebrow" style="color:#aaa;margin-top:42px">EVERY BAY. EVERY JOB. ONE PLATFORM.</div><h1>Your workshop journey starts here.</h1><p>One place for vehicle owners, workshop teams and automotive service partners.</p></div><div style="font-size:10px;color:#777">QUICKBAY · INDIA</div></section><section class="authform"><div class="eyebrow">WELCOME TO QUICKBAY</div><h2 id="authTitle">Sign in to your account</h2><div class="muted" id="authSub">Access your garage, bookings and workshop workspace.</div><div class="authswitch"><button id="signinTab" class="active" onclick="setAuthTab('signin')">Sign in</button><button id="signupTab" onclick="setAuthTab('signup')">Create account</button></div><form id="authForm" onsubmit="submitAuth(event)"><label id="authNameWrap" class="authhidden">Full name<input class="field" id="authName" autocomplete="name" placeholder="Your full name"></label><label>Email address<input class="field" id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label><label>Password<input class="field" id="authPassword" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters"></label><div class="authmessage" id="authMessage">Sign in is not connected yet. Connect a Supabase project and add its public URL and anon key in config.js. You can still preview the demo.</div><div class="authactions"><button class="btn" id="authSubmit" type="submit" disabled>Sign in</button><button class="btn light" type="button" onclick="previewAsGuest()">Continue in demo preview</button><button type="button" class="btn outline" id="forgotBtn" onclick="resetPassword()">Forgot password?</button></div></form><div class="authfine">By continuing, you agree to QuickBay’s Terms and Privacy Policy. Workshop and admin access is granted by invitation and cannot be self-selected during signup.</div></section></div></div><div class="splash" id="splash"><div class="splashin"><div class="brandmark"><i></i>QuickBay</div><div class="road"><div class="car">🚙</div></div><div class="loadbar"></div><small id="loadmsg">Initialising QuickBay</small></div></div>
 <div class="app"><aside class="sidebar"><div class="logo">Quick<span>Bay</span></div><div class="tagline">EVERY BAY. EVERY JOB.</div><select class="mode" id="mode" aria-label="Workspace" onchange="switchMode(this.value)"><option value="customer">Vehicle Owner</option><option value="workshop">Workshop OS</option><option value="admin">QuickBay Admin</option></select><div class="navlabel">WORKSPACE</div><nav class="nav" id="nav"></nav><div class="sidefoot">QuickBay MVP · Local demo workspace<br>Data is saved in this browser only.</div></aside>
 <main class="main"><header class="topbar"><div class="crumb" id="crumb">Overview</div><div class="topright"><span class="pill">● Demo environment</span><button class="btn light" style="padding:8px 10px;font-size:10px" onclick="quickbaySignOut()">Sign out</button><div class="avatar">Q</div></div></header><div class="content" id="view"></div></main></div>
