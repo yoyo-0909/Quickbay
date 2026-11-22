@@ -101,7 +101,7 @@ async function saveInventoryItem(e){
 }
 function editInventoryItem(id){
  const i=qbInventoryItems.find(x=>x.id===id);if(!i)return;
- modal('Edit inventory item','Update item details. Stock quantities change through the stock ledger.','<form onsubmit="saveInventoryItemEdit(event,'+JSON.stringify(id)+')"><div class="formgrid">'+
+ modal('Edit inventory item','Update item details. Stock quantities change through the stock ledger.','<form data-item-id="'+qbSafe(id)+'" onsubmit="saveInventoryItemEdit(event,this.dataset.itemId)"><div class="formgrid">'+
  '<label>Item name<input class="field" name="name" required value="'+qbSafe(i.name)+'"></label><label>SKU<input class="field" name="sku" value="'+qbSafe(i.sku||'')+'"></label>'+
  '<label>Category<input class="field" name="category" value="'+qbSafe(i.category||'')+'"></label><label>Unit<input class="field" name="unit" value="'+qbSafe(i.unit)+'"></label>'+
  '<label>Reorder level<input class="field" name="reorder" type="number" min="0" value="'+qbSafe(i.reorder_level)+'"></label><label>Unit cost<input class="field" name="cost" type="number" min="0" step="0.01" value="'+qbSafe(i.unit_cost)+'"></label></div><button class="btn">Save changes</button></form>');
@@ -112,7 +112,7 @@ async function saveInventoryItemEdit(e,id){
 }
 function stockMovementForm(id){
  const i=qbInventoryItems.find(x=>x.id===id);if(!i)return;
- modal('Record stock movement',qbSafe(i.name)+' · Current stock: '+qbSafe(i.quantity_on_hand)+' '+qbSafe(i.unit),'<form onsubmit="saveStockMovement(event,'+JSON.stringify(id)+')"><div class="formgrid"><label>Movement type<select name="type"><option value="stock_in">Stock in</option><option value="stock_out">Stock out</option><option value="adjustment">Adjustment (+/-)</option></select></label>'+field('Quantity','quantity','e.g. 5','number')+field('Reference','reference','Supplier invoice / job code')+field('Notes','notes','Optional notes','text',true)+'</div><button class="btn">Record movement</button></form>');
+ modal('Record stock movement',qbSafe(i.name)+' · Current stock: '+qbSafe(i.quantity_on_hand)+' '+qbSafe(i.unit),'<form data-item-id="'+qbSafe(id)+'" onsubmit="saveStockMovement(event,this.dataset.itemId)"><div class="formgrid"><label>Movement type<select name="type"><option value="stock_in">Stock in</option><option value="stock_out">Stock out</option><option value="adjustment">Adjustment (+/-)</option></select></label>'+field('Quantity','quantity','e.g. 5','number')+field('Reference','reference','Supplier invoice / job code')+field('Notes','notes','Optional notes','text',true)+'</div><button class="btn">Record movement</button></form>');
 }
 async function saveStockMovement(e,id){
  e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const quantity=Number(d.quantity);
