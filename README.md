@@ -1,43 +1,47 @@
 # QuickBay
 **Every Bay. Every Job. One Platform.**
 
-India-focused automotive workshop marketplace and workshop operations OS.
+QuickBay is an India-focused automotive workshop marketplace and workshop operations platform.
 
-## What's in this repository
-- Responsive customer, workshop and admin workspace UI.
-- Branded loading screen and a sign-in / customer registration screen.
-- Supabase Auth integration points in `config.js` (project URL + public anon key only).
-- PostgreSQL schema, row-level security and transactional workflow functions in `supabase/migrations`.
-- Customer garage, booking requests and permitted workshop-directory reads wired to Supabase when configured.
-- OpenStreetMap (ODbL) tiled automotive POI discovery collector and a licensed CSV import pipeline.
-- Partner application, bay and job-card demo workflows.
+## Project status
+- Production UI: https://quickbay.vercel.app
+- Active development branch: `work/quickbay-completion`
+- Supabase project: connected and healthy in the Mumbai region.
+- The current development branch is a preview only. It has not been merged into the production branch or assigned to the production domain.
+- No workshop directory records have been imported or published. The directory must display only source-permitted or approved records.
 
-## Live deployment
-https://quickbay.vercel.app
+## Authentication
+- Email + password sign-in.
+- Registration collects full name and mobile number.
+- Mobile number is saved as contact information in `profiles.phone`.
+- No mobile OTP, SMS verification, or phone-based login.
+- Email changes are not exposed in the profile editor because they require a separate confirmation flow.
 
-## Backend activation status
-Backend code is scaffolded, but the live Supabase project has not yet been connected or provisioned. The site therefore remains in demo preview until a Supabase project is connected, migrations are applied and `config.js` is configured. See [SUPABASE_SETUP.md](SUPABASE_SETUP.md).
+## Application modules
+- Customer: profile, garage, vehicle updates, workshop discovery, booking requests, cancellation of eligible bookings, service tracking, service history and in-app inbox.
+- Workshop: member-scoped bookings, bays, job cards, stage transitions, technicians, service catalogue, draft estimates, invoice register, inventory ledger and parts-return records.
+- Admin: platform overview, customer/profile list, booking list, workshop applications, partner directory, service categories, analytics and audit log views.
 
-## Workshop data
-The goal is 30,000+ genuine records, not a fabricated count. The repository includes an OSM collector and a source-attributed CSV importer. The OSM collector may return fewer than 30,000 named automotive POIs because mapping coverage varies. For the 30k+ target, obtain a written license from a commercial data supplier if open data is insufficient. See [DATA_SOURCING.md](DATA_SOURCING.md).
+## Backend
+The Supabase project contains the core profiles, workshops, workshop membership, vehicles, services, bookings, bays, technicians, job cards, estimates, invoices, parts-return and audit tables. Migrations `0001`–`0005` established the core schema and security helpers. Migrations `0006` and `0007` add inventory, in-app notification storage, customer cancellation rules, estimate-item access and a restricted inventory movement RPC.
 
-Never scrape or bulk-copy restricted Google Maps listings. Never claim a third-party listing is a QuickBay-verified partner. Ratings and review counts are shown only when supplied by an attributable source.
+See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for environment and migration notes.
 
-## Run the OpenStreetMap collector
-```bash
-python scripts/fetch_osm_workshops.py --out osm-workshops.csv
-```
-The collector uses tiled Overpass queries with rate limiting and retry behaviour. Public Overpass endpoints can throttle or time out; a Geofabrik PBF extract is preferable for large-scale repeatable ingestion.
+## Workshop data and licensing
+The directory target is 30,000+ genuine records, but this is a sourcing goal—not a current count. Do not invent workshops, phone numbers, ratings, locations or partner verification. Only import data after a written license confirms storage, public display, commercial use and attribution rights. See [DATA_SOURCING.md](DATA_SOURCING.md).
 
-## Import licensed records
-```bash
-npm install
-SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
-SOURCE_NAME="OpenStreetMap" SOURCE_LICENSE="ODbL-1.0" \
-SOURCE_ATTRIBUTION="© OpenStreetMap contributors" PUBLIC_DISPLAY_PERMITTED=true \
-node scripts/import-workshops.mjs ./osm-workshops.csv
-```
-Only run the import after verifying the source license and public display rights. Keep service-role credentials server-side.
+## Intentionally disabled during this development phase
+- Payment gateway activation and financial transactions.
+- Paid third-party services or subscriptions.
+- Outbound SMS, email, push or customer notifications.
+- Publishing or importing real customer/workshop records.
+- Destructive database changes or deleting existing data.
+- Merging development branches or changing production deployments.
 
-## Payment boundary
-Payment processing remains intentionally disconnected. No real payment credentials are collected and demo checkout must never be represented as a real payment.
+The in-app notification table is storage only; no outbound notification provider or automatic customer messaging is configured.
+
+## Validation status
+- JavaScript syntax checks pass for the inline application scripts and `workflows.js`.
+- Vercel preview builds have reached `READY`.
+- Database migration objects and inventory RPC have been verified.
+- Full interactive browser QA and authenticated end-to-end testing remain outstanding because no dedicated test accounts were supplied.
