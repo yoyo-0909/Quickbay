@@ -31,11 +31,11 @@ for (let i=0;i<rows.length;i+=250) {
  const chunk=rows.slice(i,i+250).map(r=>({
   name:r.name || r.workshop_name || r.business_name,
   category:r.category || 'Automotive workshop',
-  address:r.address || '',
+  address:r.address || null,
   locality:r.locality || null,
-  city:r.city || r.town || '',
+  city:r.city || r.town || null,
   district:r.district || null,
-  state:r.state || '',
+  state:r.state || null,
   pincode:r.pincode || r.pin_code || null,
   latitude:r.latitude ? Number(r.latitude) : null,
   longitude:r.longitude ? Number(r.longitude) : null,
@@ -46,7 +46,7 @@ for (let i=0;i<rows.length;i+=250) {
   source_attribution:process.env.SOURCE_ATTRIBUTION,
   partner_status:'pending_review',
   claim_status:'unclaimed'
- })).filter(r=>r.name && r.address && r.city && r.state);
+ })).filter(r=>r.name && (r.latitude !== null && r.longitude !== null || r.address));
  rejected += rows.slice(i,i+250).length-chunk.length;
  const {data,error}=await db.from('workshops').upsert(chunk,{onConflict:'listing_source,source_record_id',ignoreDuplicates:true}).select('id');
  if(error) throw error;
