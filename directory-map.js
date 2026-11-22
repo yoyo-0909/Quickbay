@@ -20,8 +20,9 @@ function qbOpenPartnerApplication(){
 function qbDirectoryMapFallback(message){
  const el=document.getElementById('workshopMap');if(!el)return;
  if(window.qbDirectoryMap){try{window.qbDirectoryMap.remove()}catch(_){}window.qbDirectoryMap=null}
- el.innerHTML='<div class="qb-map-fallback"><span class="qb-map-road qb-road-one"></span><span class="qb-map-road qb-road-two"></span><span class="qb-map-pin">⌖</span><b>Tiruvallur, Tamil Nadu</b><small>'+qbSafe(message||'Interactive map is unavailable. Workshop records will still appear in the list.')+'</small><a href="https://www.openstreetmap.org/#map=13/13.1231/79.9120" target="_blank" rel="noopener">Open map in OpenStreetMap ↗</a></div>';
+ el.innerHTML='<iframe title="Tiruvallur workshop map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox=79.82%2C13.04%2C80.02%2C13.20&layer=mapnik&marker=13.1231%2C79.9120" style="width:100%;height:100%;min-height:300px;border:0;display:block"></iframe><div class="qb-map-fallback-note"><b>Tiruvallur, Tamil Nadu</b><small>'+qbSafe(message||'Interactive pins are temporarily unavailable. Workshop listings remain available below.')+'</small><a href="https://www.openstreetmap.org/#map=13/13.1231/79.9120" target="_blank" rel="noopener">Open full map ↗</a></div>';
 }
+
 function qbInitDirectoryMap(rows){
  const el=document.getElementById('workshopMap');if(!el)return;
  const geocoded=(rows||[]).filter(w=>w.latitude!=null&&w.longitude!=null&&Number.isFinite(Number(w.latitude))&&Number.isFinite(Number(w.longitude))&&Number(w.latitude)>=-90&&Number(w.latitude)<=90&&Number(w.longitude)>=-180&&Number(w.longitude)<=180);
