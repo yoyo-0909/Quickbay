@@ -21,7 +21,12 @@
  'Lexus':['ES','NX','RX','LM','LS','LX'],'Porsche':['Macan','Cayenne','Panamera','Taycan','911'],
  'MINI':['Cooper S','Countryman'],'Land Rover':['Defender','Discovery Sport','Discovery','Range Rover Evoque','Range Rover Velar','Range Rover Sport','Range Rover'],
  'Jaguar':['F-Pace','I-Pace'],'Force Motors':['Gurkha','Trax Cruiser'],'Isuzu':['D-Max V-Cross','MU-X'],
- 'Kinetic Green':['E-Luna'],'Pravaig':['Defy'],'Strom Motors':['R3']
+ 'Kinetic Green':['E-Luna'],'Pravaig':['Defy'],'Strom Motors':['R3'],
+ 'Tesla':['Model Y'],'VinFast':['VF 6','VF 7'],
+ 'Aston Martin':['Vantage','DB12','DBX'],'Bentley':['Bentayga','Continental GT','Flying Spur'],
+ 'Ferrari':['296 GTB','Roma Spider','Purosangue','12Cilindri'],'Lamborghini':['Urus SE','Revuelto','Temerario'],
+ 'Rolls-Royce':['Ghost','Cullinan','Spectre','Phantom'],'Maserati':['Grecale','GranTurismo','MC20'],'McLaren':['Artura','750S','GTS'],
+ 'Ford (legacy)':['EcoSport','Figo','Aspire','Endeavour'],'Chevrolet (legacy)':['Beat','Spark','Cruze','Tavera'],'Fiat (legacy)':['Punto','Linea','Avventura'],'Mitsubishi (legacy)':['Pajero Sport','Outlander'],'Datsun (legacy)':['Redi-GO','GO','GO+']
  };
  window.qbIndiaCarCatalogue=CARS;
  window.qbUpdateVehicleModels=function(make){const el=document.getElementById('qbVehicleModel');if(el)el.innerHTML='<option value="">Select model</option>'+(CARS[make]||[]).map(x=>'<option value="'+qbSafe(x)+'">'+qbSafe(x)+'</option>').join('')};
@@ -43,7 +48,7 @@
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const km=(a,b,c,d)=>{const r=6371,p=x=>x*Math.PI/180,dl=p(c-a),dn=p(d-b),v=Math.sin(dl/2)**2+Math.cos(p(a))*Math.cos(p(c))*Math.sin(dn/2)**2;return 2*r*Math.asin(Math.sqrt(v))};
  const setStatus=s=>{const el=document.getElementById('qbLocationStatus');if(el)el.textContent=s};
- window.explore=function(){return head('WORKSHOP DISCOVERY','Find nearby workshops & service centres','Allow location access to discover nearby car repair shops, authorised service centres and tyre services.','')+
+ window.explore=function(){return head('WORKSHOP DISCOVERY','Find nearby workshops & service centres','Allow location access to discover nearby repair workshops, service centres and tyre shops.','')+
  '<div class="qb-location-panel"><div class="qb-location-copy"><strong>Find services around your exact location</strong><small id="qbLocationStatus">Location is not enabled. QuickBay asks permission only when you tap the button.</small></div><button class="btn" type="button" onclick="qbRequestLocation()">⌖ Use my location</button></div>'+
  '<div class="searchbox"><input id="q" placeholder="Search workshop, service or locality" onkeydown="if(event.key===\'Enter\')loadWorkshopDirectory()"><button class="btn" type="button" onclick="loadWorkshopDirectory()">Search</button></div>'+
  '<div class="filters"><select id="serviceFilter"><option value="">All services</option><option value="tyres">Tyres & wheels</option><option value="motorcycle">Two-wheeler service</option></select><select id="sortFilter"><option value="distance">Nearest first</option><option value="name">Name</option></select></div>'+
