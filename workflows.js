@@ -93,7 +93,7 @@ function inventoryItemForm(){
 }
 async function saveInventoryItem(e){
  e.preventDefault();const d=Object.fromEntries(new FormData(e.target));
- const {data,error}=await supabaseClient.from('inventory_items').insert({workshop_id:qbWorkshopId,name:d.name.trim(),sku:d.sku.trim()||null,category:d.category.trim()||null,unit:d.unit.trim()||'pcs',quantity_on_hand:0,reorder_level:Number(d.reorder)||0,unit_cost:Number(d.cost)||0,active:true}).select('id').single();
+ const {data,error}=await supabaseClient.from('inventory_items').insert({workshop_id:qbWorkshopId,name:d.name.trim(),sku:d.sku.trim()||null,category:d.category.trim()||null,unit:d.unit.trim()||'pcs',reorder_level:Number(d.reorder)||0,unit_cost:Number(d.cost)||0,active:true}).select('id').single();
  if(error){toast(qbErr(error));return}
  const opening=Number(d.opening)||0;
  if(opening>0){const movement=await supabaseClient.rpc('record_inventory_movement',{p_item_id:data.id,p_movement_type:'stock_in',p_quantity:opening,p_reference:'Opening balance',p_notes:'Initial inventory entry'});if(movement.error){toast('Item saved, but opening stock was not recorded: '+qbErr(movement.error));await qbRefreshWorkshop();return}}
