@@ -16,10 +16,10 @@ import { parse } from 'csv-parse/sync';
 
 const file = process.argv[2];
 if (!file || !fs.existsSync(file)) throw new Error('Usage: node scripts/import-workshops.mjs <licensed.csv>');
-for (const key of ['SUPABASE_URL','SUPABASE_SERVICE_ROLE_KEY','SOURCE_NAME','SOURCE_LICENSE','SOURCE_ATTRIBUTION']) {
+for (const key of ['SUPABASE_URL','SUPABASE_SERVICE_ROLE_KEY','SOURCE_NAME','SOURCE_LICENSE','SOURCE_ATTRIBUTION','PUBLIC_DISPLAY_PERMITTED']) {
   if (!process.env[key]) throw new Error(`Missing required environment variable: ${key}`);
 }
-const db = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession:false } });
+if (process.env.PUBLIC_DISPLAY_PERMITTED !== 'true') throw new Error('Set PUBLIC_DISPLAY_PERMITTED=true only when your written license allows public display.');\nconst db = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession:false } });
 const rows = parse(fs.readFileSync(file,'utf8'), { columns:true, skip_empty_lines:true, bom:true, trim:true });
 const batch = await db.from('workshop_import_batches').insert({
  source_name:process.env.SOURCE_NAME, source_license:process.env.SOURCE_LICENSE,
@@ -41,7 +41,7 @@ for (let i=0;i<rows.length;i+=250) {
   longitude:r.longitude ? Number(r.longitude) : null,
   phone:r.phone || null,email:r.email || null,
   listing_source:process.env.SOURCE_NAME,
-  source_record_id:r.source_record_id || r.id || null,
+  source_record_id:r.source_record_id || r.id || (r.name+'|'+(r.address||'')+'|'+(r.city||r.town||'')+'|'+(r.state||'')).toLowerCase().replace(/\\s+/g,' ').trim(),
   source_license:process.env.SOURCE_LICENSE,
   source_attribution:process.env.SOURCE_ATTRIBUTION,
   partner_status:'pending_review',
