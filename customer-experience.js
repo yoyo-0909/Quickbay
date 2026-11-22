@@ -58,13 +58,19 @@
  const km=(a,b,c,d)=>{const r=6371,p=x=>x*Math.PI/180,dl=p(c-a),dn=p(d-b),v=Math.sin(dl/2)**2+Math.cos(p(a))*Math.cos(p(c))*Math.sin(dn/2)**2;return 2*r*Math.asin(Math.sqrt(v))};
  const setStatus=s=>{const el=document.getElementById('qbLocationStatus');if(el)el.textContent=s};
  window.explore=function(){const html=head('WORKSHOP DISCOVERY','Find nearby workshops & service centres','Allow location access to discover nearby repair workshops, authorised brand service centres and tyre shops across India.','')+
- '<div class="qb-location-panel"><div class="qb-location-copy"><strong>Find services around your exact location</strong><small id="qbLocationStatus">We’ll use your current location to find nearby workshops anywhere in India.</small></div><button class="btn" type="button" onclick="qbRequestLocation()">⌖ Use my location</button></div>'+
+ '<div class="qb-location-panel"><div class="qb-location-copy"><strong>Find services around your location</strong><small id="qbLocationStatus">Use GPS or search a city / PIN code if you prefer not to share your location.</small></div><button class="btn" type="button" onclick="qbRequestLocation()">⌖ Use my location</button></div>'+
+ '<div class="searchbox"><input id="qbAreaInput" placeholder="Enter city, area or PIN code (e.g. Tiruvallur)" onkeydown="if(event.key===\'Enter\')qbSearchArea()"><button class="btn" type="button" onclick="qbSearchArea()">Search area</button></div>'+
  '<div class="searchbox"><input id="q" placeholder="Search workshop, service or locality" onkeydown="if(event.key===\'Enter\')loadWorkshopDirectory()"><button class="btn" type="button" onclick="loadWorkshopDirectory()">Search</button></div>'+
  '<div class="filters"><select id="serviceFilter"><option value="">All services</option><option value="tyres">Tyres & wheels</option><option value="motorcycle">Two-wheeler service</option></select><select id="sortFilter"><option value="distance">Nearest first</option><option value="name">Name</option></select></div>'+
  '<div class="sectiontitle" style="margin:14px 0 8px">Nearby results</div><div id="results"><div class="card">Tap “Use my location” to find nearby services.</div></div>'+
  '<div class="sectiontitle" style="margin:18px 0 8px">Map</div><div id="workshopMap" class="qb-directory-map" role="region" aria-label="Nearby workshop map"></div>'+
  '<div class="muted" style="margin-top:8px">Map © OpenStreetMap contributors. Listings are sourced from OpenStreetMap and are not QuickBay-verified. Confirm details before visiting.</div>'+
  '<div class="qb-partner-cta" style="margin-top:16px"><div><b>Own or manage an automotive workshop?</b><div class="muted">Apply to join QuickBay. Applications are not automatically published.</div></div><button class="btn light" onclick="qbOpenPartnerApplication()">Register workshop</button></div>';return html};
+ window.qbSearchArea=async function(){
+  const field=document.getElementById('qbAreaInput'),query=(field?.value||'').trim();if(!query){setStatus('Enter a city, locality or PIN code to search.');return}
+  setStatus('Finding '+query+'…');
+  try{const url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(query+', India');const res=await fetch(url,{headers:{Accept:'application/json'}});if(!res.ok)throw Error('Area search returned '+res.status);const hits=await res.json();if(!hits.length)throw Error('No matching area found. Try a nearby city or PIN code.');location={lat:Number(hits[0].lat),lon:Number(hits[0].lon)};setStatus('Showing services near '+(hits[0].display_name||query).split(',').slice(0,3).join(',')+' · 25 km radius');loadWorkshopDirectory()}catch(e){setStatus(e.message||'Could not find that area. Try again.');toast(e.message||'Area search failed')}
+ };
  window.qbRequestLocation=function(){
   if(!navigator.geolocation){setStatus('This browser does not support location access.');return}
   setStatus('Requesting location permission…');
@@ -81,8 +87,8 @@
    source:'OpenStreetMap',rating:rating>0?rating:null,brand:t.brand||t.operator||'',email:t.email||t['contact:email']||'',demoApproved:true,distance:km(location.lat,location.lon,Number(lat),Number(lon)),osmUrl:'https://www.openstreetmap.org/'+el.type+'/'+el.id};
  }
  async function osm(){
-  const q='[out:json][timeout:25];(nwr(around:25000,'+location.lat+','+location.lon+') ["craft"~"^(car_repair|mechanic|auto_repair)$"];nwr(around:25000,'+location.lat+','+location.lon+') ["amenity"="car_repair"];nwr(around:25000,'+location.lat+','+location.lon+') ["shop"~"^(car_repair|motorcycle|tyres|car)$"];nwr(around:25000,'+location.lat+','+location.lon+') ["brand"~"(Maruti|Nexa|Hyundai|Tata|Mahindra|Kia|Toyota|Honda|Renault|Nissan|Volkswagen|Skoda|BMW|Mercedes|Audi|Jeep|MG|BYD|Volvo)",i];);out center tags;';
-  let last;for(const url of endpoints){try{const res=await fetch(url+'?data='+encodeURIComponent(q),{headers:{Accept:'application/json'}});if(!res.ok)throw Error('Map directory returned '+res.status);const data=await res.json();return (data.elements||[]).map(normalise).filter(Boolean)}catch(e){last=e}}throw last||Error('Nearby directory unavailable');
+  const q='[out:json][timeout:25];(nwr(around:25000,'+location.lat+','+location.lon+')["craft"~"^(car_repair|mechanic|auto_repair)$"];nwr(around:25000,'+location.lat+','+location.lon+')["amenity"="car_repair"];nwr(around:25000,'+location.lat+','+location.lon+')["shop"~"^(car_repair|motorcycle|tyres|car)$"];nwr(around:25000,'+location.lat+','+location.lon+')["service:vehicle:repair"="yes"];nwr(around:25000,'+location.lat+','+location.lon+')["brand"~"(Maruti|Nexa|Hyundai|Tata|Mahindra|Kia|Toyota|Honda|Renault|Nissan|Volkswagen|Skoda|BMW|Mercedes|Audi|Jeep|MG|BYD|Volvo)",i];nwr(around:25000,'+location.lat+','+location.lon+')["name"~"(Maruti|Nexa|Hyundai|Tata|Mahindra|Kia|Toyota|Honda|Renault|Nissan|Volkswagen|Skoda|BMW|Mercedes|Audi|Jeep|MG|BYD|Volvo)",i];);out center tags;';
+  let last;for(const url of endpoints){try{const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8','Accept':'application/json'},body:'data='+encodeURIComponent(q)});if(!res.ok)throw Error('Public directory returned '+res.status);const data=await res.json();return (data.elements||[]).map(normalise).filter(Boolean)}catch(e){last=e}}throw last||Error('Nearby public directory unavailable');
  }
  async function quickbay(){
   if(!window.supabaseClient)return [];
@@ -93,13 +99,17 @@
  function initMap(data){
   const el=document.getElementById('workshopMap');if(!el)return;if(map){try{map.remove()}catch(_){}map=null}markers=[];
   const center=location?[location.lat,location.lon]:defaultCenter;
-  if(!window.L){el.innerHTML='<iframe title="India map" style="width:100%;height:100%;border:0" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=67%2C6%2C98%2C37&layer=mapnik'+(location?'&marker='+center[0]+'%2C'+center[1]:'')+'"></iframe>';return}
-  el.innerHTML='';map=L.map(el,{scrollWheelZoom:false}).setView(center,location?13:4);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
-  if(location)L.circleMarker(center,{radius:9,color:'#2563eb',fillColor:'#60a5fa',fillOpacity:1}).addTo(map).bindPopup('Your current location');
-  data.forEach(w=>{const m=L.marker([+w.latitude,+w.longitude]).addTo(map);m.bindPopup('<b>'+esc(w.name)+'</b><br>'+esc(w.category)+'<br>'+w.distance.toFixed(1)+' km away<br><button type="button" onclick="qbShowNearbyDetails(\''+esc(w.id)+'\')">View details</button>');markers.push({id:w.id,marker:m})});
-  if(data.length){const group=L.featureGroup(markers.map(x=>x.marker));if(location)map.fitBounds(group.getBounds().extend(center).pad(.18),{maxZoom:14});else if(data.length>1)map.fitBounds(group.getBounds().pad(.18),{maxZoom:14});else map.setView([data[0].latitude,data[0].longitude],14)}
-  setTimeout(()=>map&&map.invalidateSize(),100);
+  const fallback=()=>{const lat=center[0],lon=center[1],d=location?0.35:15;const bbox=[lon-d,lat-d,lon+d,lat+d].join('%2C');el.innerHTML='<iframe title="OpenStreetMap nearby services" style="width:100%;height:100%;min-height:300px;border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox='+bbox+'&layer=mapnik'+(location?'&marker='+lat+'%2C'+lon:'')+'"></iframe>'};
+  if(!window.L||typeof window.L.map!=='function'){fallback();return}
+  el.innerHTML='';const mapRef=L.map(el,{scrollWheelZoom:false,preferCanvas:true}).setView(center,location?13:4);map=mapRef;
+  const tiles=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(mapRef);let tileErrors=0;
+  tiles.on('tileerror',()=>{tileErrors++;if(tileErrors>=4&&map===mapRef){try{mapRef.remove()}catch(_){}map=null;fallback()}});
+  if(location)L.circleMarker(center,{radius:9,color:'#2563eb',fillColor:'#60a5fa',fillOpacity:1}).addTo(mapRef).bindPopup('Search centre');
+  data.forEach(w=>{const lat=Number(w.latitude),lon=Number(w.longitude);if(!Number.isFinite(lat)||!Number.isFinite(lon))return;const m=L.marker([lat,lon]).addTo(mapRef);m.bindPopup('<b>'+esc(w.name)+'</b><br>'+esc(w.category)+'<br>'+Number(w.distance||0).toFixed(1)+' km away<br><button type="button" onclick="qbShowNearbyDetails(\\''+esc(w.id)+'\\')">View details</button>');markers.push({id:w.id,marker:m})});
+  if(markers.length){const group=L.featureGroup(markers.map(x=>x.marker));if(location)mapRef.fitBounds(group.getBounds().extend(center).pad(.18),{maxZoom:14});else if(markers.length>1)mapRef.fitBounds(group.getBounds().pad(.18),{maxZoom:14});else mapRef.setView(markers[0].marker.getLatLng(),14)}
+  setTimeout(()=>{if(map===mapRef)mapRef.invalidateSize()},250);
  }
+
  window.qbShowNearbyDetails=function(id){
   const w=rows.find(x=>String(x.id)===String(id));if(!w)return;const address=w.address||[w.locality,w.city,w.district,w.state,w.pincode].filter(Boolean).join(', ')||'Address not listed';
   const phone=w.phone?'<a href="tel:'+esc(w.phone)+'">'+esc(w.phone)+'</a>':'Not listed';const email=w.email?'<a href="mailto:'+esc(w.email)+'">'+esc(w.email)+'</a>':'Not listed';
@@ -112,11 +122,11 @@
   if(!location){target.innerHTML=empty('⌖','Turn on location to find nearby services','QuickBay needs permission to use your device location. Tap “Use my location” to see workshops within 25 km.');initMap([]);return}
   target.innerHTML='<div class="card">Finding nearby workshops and service centres…</div>';setStatus('Searching within 25 km of your location…');
   try{
-   const pair=await Promise.all([osm(),quickbay()]),unique=new Map();[...pair[1],...pair[0]].forEach(w=>{const k=(w.name+'|'+(w.address||'')).toLowerCase();if(!unique.has(k)||w.source==='QuickBay directory')unique.set(k,w)});
+   const settled=await Promise.allSettled([osm(),quickbay()]);const publicRows=settled[0].status==='fulfilled'?settled[0].value:[];const quickbayRows=settled[1].status==='fulfilled'?settled[1].value:[];const unique=new Map();[...publicRows,...quickbayRows].forEach(w=>{const k=(w.name+'|'+(w.address||'')).toLowerCase();if(!unique.has(k)||w.source==='QuickBay directory')unique.set(k,w)});
    rows=Array.from(unique.values()).filter(w=>w.distance<=25);
    const term=(document.getElementById('q')?.value||'').trim().toLowerCase();if(term)rows=rows.filter(w=>(w.name+' '+(w.address||'')+' '+(w.category||'')).toLowerCase().includes(term));
    const service=document.getElementById('serviceFilter')?.value;if(service==='tyres')rows=rows.filter(w=>/tyre|tire/i.test(w.category+' '+(w.services||[]).join(' ')));if(service==='motorcycle')rows=rows.filter(w=>/motorcycle|two.wheeler/i.test(w.category+' '+(w.services||[]).join(' ')));
-   rows.sort((a,b)=>document.getElementById('sortFilter')?.value==='name'?a.name.localeCompare(b.name):a.distance-b.distance);initMap(rows);setStatus('Location enabled · '+rows.length+' results within 25 km');
+   rows.sort((a,b)=>document.getElementById('sortFilter')?.value==='name'?a.name.localeCompare(b.name):a.distance-b.distance);initMap(rows);setStatus('Search area ready · '+rows.length+' results within 25 km'+(settled[0].status==='rejected'?' · public map directory temporarily unavailable':''));
    if(!rows.length){target.innerHTML=empty('⌖','No nearby listings found','No OpenStreetMap or QuickBay listings were found within 25 km. Try a wider area or check again later.');return}
    target.innerHTML='<div class="muted" style="margin-bottom:8px">'+rows.length+' nearby results · within 25 km</div><div class="qb-nearby-list">'+rows.map(w=>'<article class="qb-nearby-card"><div class="qb-nearby-icon">🔧</div><div><div class="qb-nearby-title">'+esc(w.name)+'</div><div class="qb-nearby-meta">'+esc(w.address||w.locality||w.city||'Address not listed')+'</div><div class="qb-nearby-meta">'+esc(w.category||'Automotive service')+' · '+w.distance.toFixed(1)+' km away</div><div class="qb-nearby-tags"><span class="qb-source-tag">'+esc(w.source)+'</span><span class="qb-source-tag">QuickBay Demo Approved</span></div></div><div class="actions"><button class="btn light" type="button" data-id="'+esc(w.id)+'" onclick="qbShowNearbyDetails(this.dataset.id)">Details</button><button class="btn light" type="button" data-id="'+esc(w.id)+'" onclick="qbFocusWorkshop(this.dataset.id)">Map</button></div></article>').join('')+'</div>';
   }catch(e){console.error(e);target.innerHTML=empty('⚠','Nearby directory temporarily unavailable','The public map directory could not be reached. Check your connection and tap Search to retry.');setStatus('Could not reach the public directory. Please retry.');initMap([])}
