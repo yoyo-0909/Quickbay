@@ -1,28 +1,37 @@
-# QuickBay backend setup
+# QuickBay Supabase setup and current status
 
-## Current status
-The application now includes an authentication screen wired to Supabase Auth when configured, SQL migrations, row-level security, and a licensed workshop CSV importer. The live Vercel site is still using the demo preview until a Supabase project is connected and configured.
+## Current connection
+- Supabase project: QuickBay (`zotokdookrbnjfyldizr`), Mumbai region.
+- Project health: active and healthy at the last check.
+- The public browser configuration is in `config.js` and contains only the Supabase project URL and publishable/anon key.
+- Never place a service-role key or secret key in `config.js`, frontend code, or a public repository.
 
-## Connect Supabase
-1. Connect the Supabase integration in ChatGPT when prompted, or create a Supabase project at https://supabase.com/dashboard.
-2. Apply migrations in order:
-   - `supabase/migrations/0001_quickbay_core.sql`
-   - `supabase/migrations/0002_directory_and_workflow.sql`\n   - `supabase/migrations/0003_booking_concurrency.sql`
-3. In Supabase Auth settings, enable email/password and set the site URL to `https://quickbay.vercel.app`.
-4. Put the project's URL and anon/publishable key in the public `config.js` file. Never put the service-role key in frontend code.
-5. Configure the Vercel production deployment to serve the updated `config.js`.
-6. Create the first Super Admin through a secure, one-time server-side administrative operation. Do not expose role assignment in public signup or the browser.
+## Database migrations
+The live database already contains the core schema from migrations `0001` through `0005`. The following additive migrations have also been applied:
+- `0006_inventory_notifications_and_customer_workflows.sql`: inventory items, immutable stock movement ledger, in-app notification storage, customer booking cancellation and estimate-item policies.
+- `0007_lock_inventory_ledger_permissions.sql`: restricts stock quantity changes to the authenticated `record_inventory_movement` RPC and limits notification updates to `read_at`.
 
-## Important
-The Supabase integration has not yet been connected to this ChatGPT session, and no live database has been provisioned or migrations executed. Do not enter production credentials in chat. Once connected, apply and test the migrations against the actual project before inviting users.
+Do not reapply the original core migrations to an already-provisioned database. Apply future migrations in order and verify them before connecting new UI workflows.
 
-## OpenStreetMap discovery import
-OpenStreetMap provides reusable map data under ODbL. The India data page describes Overpass API and daily Geofabrik extracts. QuickBay includes a polite tiled Overpass collector for named automotive POIs:
+## Authentication rules
+- Email/password is the only authentication method.
+- Registration collects full name and mobile number.
+- The mobile number is copied to `public.profiles.phone` and is used as contact information only.
+- No phone OTP, SMS verification, or phone-based sign-in is enabled.
+- User role is never accepted from public signup metadata; new users receive the `vehicle_owner` role.
+- Workshop pages require an active row in `workshop_members`. A workshop role alone is not sufficient to access a workshop record.
 
-```bash
-python scripts/fetch_osm_workshops.py --out osm-workshops.csv
-```
+## Security and data handling
+- Row Level Security is enabled on the public application tables.
+- Workshop records are scoped through active workshop membership.
+- Customer records are scoped to the authenticated customer.
+- The inventory ledger is append-only from the browser; stock adjustments go through `record_inventory_movement`.
+- In-app notification records are private to their owner. No SMS, email, push provider or customer notification dispatch is configured.
+- Payment processing is not connected.
+- No real workshop/customer dataset has been imported or published.
 
-This collector can take a long time and may be throttled by public Overpass servers. It collects only named OSM objects tagged as car repair, car mechanics, car painters, tyre shops, car dealers or car washes. Coverage is mapper-dependent, not exhaustive. It does not invent phone numbers, ratings, addresses or partner verification. The resulting CSV is a candidate directory and must be deduplicated/quality-reviewed before import.
+## Admin access
+The first super-admin must be provisioned through a secure, one-time administrative process. Never expose role assignment in public signup or the browser. Admin access should be verified using a dedicated test account before launch.
 
-Then import the collected data only after checking the ODbL obligations and your intended database distribution model. ODbL attribution: © OpenStreetMap contributors. Use the importer with server-only credentials and `PUBLIC_DISPLAY_PERMITTED=true`.
+## Local / preview validation
+Use a dedicated test account and a test workshop membership to exercise customer and workshop flows. Do not use live customer data for testing. The development branch is separate from production; do not merge or promote it until the owner explicitly approves the release.
