@@ -39,7 +39,7 @@ completeAuth=async function(user){
 menus.workshop.splice(6,0,['Service Catalogue','⚙']);
 const qbBookingsPageBase=bookingsPage;
 bookingsPage=function(){
- const rows=bookings.map(b=>'<tr><td><b>'+qbSafe(b.id)+'</b></td><td>'+qbSafe(b.service)+'</td><td>'+qbSafe(b.date||'Not set')+'</td><td><span class="status">'+qbSafe(b.status)+'</span></td><td>'+qbSafe(b.notes||'—')+'</td><td>'+(authUser&&['requested','rescheduled','confirmed'].includes(b.status)?'<button class="btn light" data-id="'+qbSafe(b.uuid)+'" onclick="cancelBooking(this.dataset.id)">Cancel</button>':'—')+'</td></tr>').join('');
+ const rows=bookings.map(b=>'<tr><td><b>'+qbSafe(b.id)+'</b></td><td>'+qbSafe(b.service)+'</td><td>'+qbSafe(b.date||'Not set')+'</td><td><span class="status">'+qbSafe(b.status)+'</span></td><td>'+qbSafe(b.notes||'—')+'</td><td>'+(authUser&&['requested','rescheduled','confirmed'].includes(b.status)?'<button class="btn light" data-id="'+qbSafe(b.uuid)+'" onclick="rescheduleBookingForm(this.dataset.id)">Reschedule</button> <button class="btn light" data-id="'+qbSafe(b.uuid)+'" onclick="cancelBooking(this.dataset.id)">Cancel</button>':'—')+'</td></tr>').join('');
  return head('BOOKINGS','My booking requests','Review your requests. Cancellation is available before workshop work begins.','<button class="btn" onclick="bookingForm()">＋ New request</button>')+
  (bookings.length?'<div class="tablewrap"><table><thead><tr><th>BOOKING ID</th><th>SERVICE</th><th>PREFERRED DATE</th><th>STATUS</th><th>NOTES</th><th>ACTION</th></tr></thead><tbody>'+rows+'</tbody></table></div>':empty('▤','No booking requests','When you request a service, it will appear here.','<button class="btn" onclick="bookingForm()">Request an appointment</button>'));
 };
@@ -184,4 +184,16 @@ jobPage=function(){
 async function assignTechnician(jobId,technicianId){
  const {error}=await supabaseClient.from('job_cards').update({technician_id:technicianId||null,updated_at:new Date().toISOString()}).eq('id',jobId).eq('workshop_id',qbWorkshopId);
  if(error){toast(qbErr(error));return}await qbRefreshWorkshop();toast('Technician assignment updated.');
+}
+
+function rescheduleBookingForm(id){
+ const b=bookings.find(x=>x.uuid===id);if(!b)return;
+ modal('Reschedule request',qbSafe(b.id)+' · Choose a new preferred date and time. This is a request, not a confirmed slot.','<form data-booking-id="'+qbSafe(id)+'" onsubmit="saveReschedule(event,this.dataset.bookingId)"><div class="formgrid">'+
+ '<label>Preferred date<input class="field" type="date" name="date" min="'+new Date().toISOString().slice(0,10)+'" required value="'+qbSafe(b.date||'')+'"></label>'+
+ '<label>Preferred time<select class="field" name="time"><option value="09:00">Morning · 9 AM</option><option value="13:00">Afternoon · 1 PM</option><option value="17:00">Evening · 5 PM</option></select></label></div><button class="btn">Save new preference</button></form>');
+}
+async function saveReschedule(e,id){
+ e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const preferredAt=new Date(d.date+'T'+d.time+':00').toISOString();
+ const {error}=await supabaseClient.from('bookings').update({status:'rescheduled',preferred_at:preferredAt,updated_at:new Date().toISOString()}).eq('id',id).eq('customer_id',authUser.id);
+ if(error){toast(qbErr(error));return}closeModal();await loadMyBookings();render();toast('New preferred time saved. The workshop must confirm it.');
 }
