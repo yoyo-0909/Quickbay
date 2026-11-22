@@ -197,7 +197,7 @@ td{color:#464756}
 </style></head><body>
 <div class="authgate" id="authgate"><div class="authlayout"><section class="authbrand"><div><div class="logo">Quick<span>Bay</span></div><div class="eyebrow" style="color:#aaa;margin-top:42px">EVERY BAY. EVERY JOB. ONE PLATFORM.</div><h1>Your workshop journey starts here.</h1><p>One place for vehicle owners, workshop teams and automotive service partners.</p></div><div style="font-size:10px;color:#777">QUICKBAY · INDIA</div></section><section class="authform"><div class="eyebrow">WELCOME TO QUICKBAY</div><h2 id="authTitle">Sign in to your account</h2><div class="muted" id="authSub">Access your garage, bookings and workshop workspace.</div><div class="authswitch"><button id="signinTab" class="active" onclick="setAuthTab('signin')">Sign in</button><button id="signupTab" onclick="setAuthTab('signup')">Create account</button></div><form id="authForm" onsubmit="submitAuth(event)"><label id="authNameWrap" class="authhidden">Full name<input class="field" id="authName" autocomplete="name" placeholder="Your full name"></label><label id="authPhoneWrap" class="authhidden">Mobile number<input class="field" id="authPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+91 98765 43210"><small class="authhint">We’ll save this to your profile. SMS OTP verification is not enabled yet.</small></label><label>Email address<input class="field" id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com"></label><label>Password<input class="field" id="authPassword" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters"></label><div class="authmessage" id="authMessage">Sign in is not connected yet. Connect a Supabase project and add its public URL and anon key in config.js. You can still preview the demo.</div><div class="authactions"><button class="btn" id="authSubmit" type="submit" disabled>Sign in</button><button class="btn light" type="button" onclick="previewAsGuest()">Continue in demo preview</button><button type="button" class="btn outline" id="forgotBtn" onclick="resetPassword()">Forgot password?</button></div></form><div class="authfine">By continuing, you agree to QuickBay’s Terms and Privacy Policy. Workshop and admin access is granted by invitation and cannot be self-selected during signup.</div></section></div></div><div class="splash" id="splash"><div class="splashin"><div class="loader-brand"><span class="loader-symbol"><i></i><i></i><i></i></span><span class="loader-word">Quick<span>Bay</span></span></div><div class="loader-orbit tire-orbit"><span class="orbit-dot"></span><span class="orbit-core loader-tire" aria-label="Rotating tyre">🛞</span><span class="orbit-spark">✦</span></div><div class="loader-progress"><span></span></div><small id="loadmsg">Getting your workshop ready</small><div class="loader-caption">EVERY BAY. EVERY JOB.</div></div></div>
 <div class="app"><aside class="sidebar"><div class="logo">Quick<span>Bay</span></div><div class="tagline">EVERY BAY. EVERY JOB.</div><select class="mode" id="mode" aria-label="Workspace" onchange="switchMode(this.value)"><option value="customer">Vehicle Owner</option><option value="workshop">Workshop OS</option><option value="admin">QuickBay Admin</option></select><div class="navlabel">WORKSPACE</div><nav class="nav" id="nav"></nav><div class="sidefoot">QuickBay MVP · Local demo workspace<br>Data is saved in this browser only.</div></aside>
-<main class="main"><header class="topbar"><div class="crumb" id="crumb">Overview</div><div class="topright"><span class="pill" id="environmentPill">● Secure workspace</span><div class="account-wrap"><button class="account-trigger" id="accountTrigger" type="button" onclick="toggleAccountMenu()" aria-haspopup="true" aria-expanded="false"><span class="avatar" id="accountAvatar">Q</span><span class="account-trigger-meta"><b id="accountShortName">Account</b><small id="accountShortEmail">View account</small></span><span class="account-chevron">⌄</span></button><div class="account-menu" id="accountMenu" role="menu"><div class="account-menu-head"><b id="accountDetailName">Not signed in</b><span id="accountDetailEmail">Demo preview</span><span class="account-phone-label">Mobile number</span><span id="accountDetailPhone">Not added</span><small id="accountPhoneStatus">Phone number is not verified</small></div><button type="button" onclick="quickbaySignOut()">Sign out <span>↗</span></button></div></div></div></header><div class="content" id="view"></div></main></div>
+<main class="main"><header class="topbar"><div class="crumb" id="crumb">Overview</div><div class="topright"><span class="pill" id="environmentPill">● Secure workspace</span><div class="account-wrap"><button class="account-trigger" id="accountTrigger" type="button" onclick="toggleAccountMenu()" aria-haspopup="true" aria-expanded="false"><span class="avatar" id="accountAvatar">Q</span><span class="account-trigger-meta"><b id="accountShortName">Account</b><small id="accountShortEmail">View account</small></span><span class="account-chevron">⌄</span></button><div class="account-menu" id="accountMenu" role="menu"><div class="account-menu-head"><b id="accountDetailName">Not signed in</b><span id="accountDetailEmail">Demo preview</span><span class="account-phone-label">Mobile number</span><span id="accountDetailPhone">Not added</span><small id="accountPhoneStatus">Your mobile number is saved as contact information</small></div><button type="button" onclick="editProfile()">Edit profile <span>✎</span></button><button type="button" onclick="quickbaySignOut()">Sign out <span>↗</span></button></div></div></div></header><div class="content" id="view"></div></main></div>
 <div class="modalback" id="modal"><div class="modal"><div class="row"><div><div class="eyebrow">QUICKBAY WORKSPACE</div><h2 id="mtitle">Create</h2><div class="muted" id="mdesc"></div></div><button class="btn light" onclick="closeModal()">✕</button></div><div id="mbody"></div></div></div><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/config.js"></script><script>
 const $=s=>document.querySelector(s);const store={get(k,d){try{return JSON.parse(localStorage.getItem('qb_'+k))??d}catch{return d}},set(k,v){localStorage.setItem('qb_'+k,JSON.stringify(v))}};
@@ -281,4 +281,273 @@ async function quickbaySignOut(){if(supabaseClient&&authUser)await supabaseClien
 const originalSwitchMode=switchMode;switchMode=function(m){if(authUser){let allowed=authRole==='super_admin'||authRole==='platform_admin'?'admin':['workshop_owner','workshop_manager','service_advisor','technician'].includes(authRole)?'workshop':'customer';if(m!==allowed){toast('Your account does not have access to that workspace.');$('#mode').value=allowed;return}}originalSwitchMode(m)};
 
 const msgs=['Initialising QuickBay','Loading your experience','Preparing workshop discovery','Connecting your account','Almost ready'];let mi=0;let mt=setInterval(()=>{mi++;if(mi<msgs.length)$('#loadmsg').textContent=msgs[mi]},420);setTimeout(()=>{clearInterval(mt);$('#splash').classList.add('hide');render()},2100);
-</script></body></html>
+</script>
+<script>
+/* QuickBay connected workflows — additive client layer */
+let qbWorkshopId=null,qbWorkshopInfo=null,qbWorkshopBookings=[],qbWorkshopJobs=[],qbWorkshopBays=[],qbTechnicians=[],qbWorkshopServices=[],qbCustomerJobs=[],qbAdmin={profiles:[],bookings:[],applications:[],workshops:[],categories:[],audit:[]};
+const qbStages=[['check_in','Vehicle Check-In'],['inspection','Inspection'],['estimate_prepared','Estimate Prepared'],['awaiting_customer_approval','Awaiting Customer Approval'],['in_bay_service','In-Bay Service'],['quality_check','Quality Check'],['ready_for_delivery','Ready for Delivery'],['delivered','Delivered']];
+const qbStageLabel=v=>(qbStages.find(x=>x[0]===v)||[v,v||'Unknown'])[1];
+const qbMoney=v=>'₹'+Number(v||0).toLocaleString('en-IN',{maximumFractionDigits:2});
+const qbSafe=v=>escapeHtml(v==null?'':String(v));
+const qbDate=v=>v?new Date(v).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):'Not scheduled';
+const qbErr=e=>e?.message||'Something went wrong. Please try again.';
+function updateAccountDetails(profile,user){
+ const name=profile?.full_name||user?.user_metadata?.full_name||'QuickBay user';
+ const email=user?.email||'Email not available';
+ const phone=profile?.phone||user?.user_metadata?.phone||user?.phone||'';
+ const initial=name.trim().charAt(0).toUpperCase()||'Q';
+ $('#accountAvatar').textContent=initial;$('#accountShortName').textContent=name;$('#accountShortEmail').textContent=email;
+ $('#accountDetailName').textContent=name;$('#accountDetailEmail').textContent=email;$('#accountDetailPhone').textContent=phone||'Not added';
+ $('#accountPhoneStatus').textContent=phone?'Saved as your contact number':'Add a mobile number to your profile';
+}
+function editProfile(){
+ if(!authUser||!supabaseClient){toast('Sign in to edit your profile.');return}
+ const name=$('#accountDetailName').textContent||authUser.user_metadata?.full_name||'';
+ const phone=$('#accountDetailPhone').textContent==='Not added'?'':$('#accountDetailPhone').textContent;
+ modal('Profile & contact details','Update the name and mobile number saved to your QuickBay account. Email remains your sign-in address.','<form onsubmit="saveProfile(event)"><div class="formgrid"><label class="full">Full name<input class="field" name="full_name" required maxlength="100" value="'+qbSafe(name)+'"></label><label class="full">Mobile number<input class="field" name="phone" required inputmode="tel" maxlength="20" value="'+qbSafe(phone)+'"></label><label class="full">Email address<input class="field" value="'+qbSafe(authUser.email||'')+'" disabled><small class="muted">Email changes require a separate confirmation flow and are not changed here.</small></label></div><button class="btn">Save profile</button></form>');
+}
+async function saveProfile(e){
+ e.preventDefault();if(!authUser||!supabaseClient)return;
+ const d=Object.fromEntries(new FormData(e.target));const phone=(d.phone||'').trim();
+ if(!/^[+0-9()\\s.-]{8,20}$/.test(phone)){toast('Enter a valid mobile number.');return}
+ const {data,error}=await supabaseClient.from('profiles').update({full_name:(d.full_name||'').trim(),phone,updated_at:new Date().toISOString()}).eq('id',authUser.id).select('full_name,email,phone,role').single();
+ if(error){toast(qbErr(error));return}
+ updateAccountDetails(data,authUser);closeModal();toast('Profile updated.');render();
+}
+async function qbLoadCustomerJobs(){
+ if(!authUser||!supabaseClient)return;
+ const {data,error}=await supabaseClient.from('job_cards').select('id,job_code,stage,reported_issue,checked_in_at,expected_completion,delivered_at,workshops(name),vehicles(registration_number,manufacturer,model),job_status_history(new_stage,note,created_at)').eq('customer_id',authUser.id).order('created_at',{ascending:false});
+ if(error){console.warn('QuickBay service history:',error.message);qbCustomerJobs=[];return}
+ qbCustomerJobs=data||[];
+}
+async function qbLoadWorkshopContext(){
+ qbWorkshopId=null;qbWorkshopInfo=null;qbWorkshopBookings=[];qbWorkshopJobs=[];qbWorkshopBays=[];qbTechnicians=[];qbWorkshopServices=[];
+ if(!authUser||!supabaseClient)return;
+ const {data:membership,error}=await supabaseClient.from('workshop_members').select('workshop_id,role,workshops(id,name,address,locality,city,district,state)').eq('user_id',authUser.id).eq('active',true).limit(1).maybeSingle();
+ if(error){console.warn('QuickBay membership:',error.message);return}
+ if(!membership)return;
+ qbWorkshopId=membership.workshop_id;qbWorkshopInfo=membership.workshops||null;
+ const tasks=await Promise.all([
+  supabaseClient.from('bookings').select('id,booking_code,customer_id,vehicle_id,requested_service,preferred_at,status,customer_notes,created_at').eq('workshop_id',qbWorkshopId).order('created_at',{ascending:false}),
+  supabaseClient.from('job_cards').select('id,job_code,booking_id,vehicle_id,customer_id,bay_id,technician_id,reported_issue,internal_notes,customer_notes,stage,checked_in_at,expected_completion,delivered_at,created_at,vehicles(registration_number,manufacturer,model)').eq('workshop_id',qbWorkshopId).order('created_at',{ascending:false}),
+  supabaseClient.from('bays').select('id,bay_code,status').eq('workshop_id',qbWorkshopId).order('bay_code'),
+  supabaseClient.from('technicians').select('id,display_name,specialisations,active').eq('workshop_id',qbWorkshopId).order('display_name'),
+  supabaseClient.from('workshop_services').select('id,name,description,labour_amount,parts_amount,tax_rate,active').eq('workshop_id',qbWorkshopId).order('name')
+ ]);
+ const [b,j,ba,t,sv]=tasks;
+ if(b.error)console.warn('Workshop bookings:',b.error.message);else qbWorkshopBookings=b.data||[];
+ if(j.error)console.warn('Workshop jobs:',j.error.message);else qbWorkshopJobs=j.data||[];
+ if(ba.error)console.warn('Workshop bays:',ba.error.message);else qbWorkshopBays=ba.data||[];
+ if(t.error)console.warn('Workshop technicians:',t.error.message);else qbTechnicians=t.data||[];
+ if(sv.error)console.warn('Workshop services:',sv.error.message);else qbWorkshopServices=sv.data||[];
+}
+async function qbLoadAdminData(){
+ if(!authUser||!supabaseClient||!['super_admin','platform_admin'].includes(authRole))return;
+ const tasks=await Promise.all([
+  supabaseClient.from('profiles').select('id,full_name,email,phone,role,created_at').order('created_at',{ascending:false}).limit(300),
+  supabaseClient.from('bookings').select('id,booking_code,customer_id,vehicle_id,workshop_id,requested_service,preferred_at,status,created_at').order('created_at',{ascending:false}).limit(300),
+  supabaseClient.from('workshop_applications').select('id,application_code,applicant_id,workshop_name,owner_name,phone,email,address,city,state,pincode,bay_count,services,status,admin_notes,created_at').order('created_at',{ascending:false}).limit(300),
+  supabaseClient.from('workshops').select('id,name,city,district,state,partner_status,is_quickbay_verified,public_display_permitted,listing_source').order('created_at',{ascending:false}).limit(300),
+  supabaseClient.from('service_categories').select('id,name,description,active,sort_order').order('sort_order'),
+  supabaseClient.from('audit_logs').select('id,actor_id,action,entity_type,entity_id,details,created_at').order('created_at',{ascending:false}).limit(100)
+ ]);
+ const keys=['profiles','bookings','applications','workshops','categories','audit'];
+ tasks.forEach((r,i)=>{if(r.error)console.warn('Admin '+keys[i]+':',r.error.message);else qbAdmin[keys[i]]=r.data||[]});
+}
+const qbOriginalCompleteAuth=completeAuth;
+completeAuth=async function(user){
+ await qbOriginalCompleteAuth(user);
+ if(!authUser||!supabaseClient)return;
+ await qbLoadCustomerJobs();
+ if(['workshop_owner','workshop_manager','service_advisor','technician'].includes(authRole))await qbLoadWorkshopContext();
+ if(['super_admin','platform_admin'].includes(authRole))await qbLoadAdminData();
+ render();
+};
+async function loadMyBookings(){
+ if(!authUser||!supabaseClient)return;
+ const {data,error}=await supabaseClient.from('bookings').select('id,booking_code,requested_service,preferred_at,status,customer_notes,vehicle_id,workshop_id,created_at').order('created_at',{ascending:false});
+ if(error){toast(qbErr(error));return}
+ bookings=(data||[]).map(b=>({id:b.booking_code,uuid:b.id,service:b.requested_service,date:b.preferred_at?b.preferred_at.slice(0,10):'',status:b.status,vehicle:b.vehicle_id,workshop:b.workshop_id,notes:b.customer_notes,created:b.created_at}));
+}
+function garage(){
+ return head('MY GARAGE','Your vehicles','Manage the vehicles linked to your account.','<button class="btn" onclick="vehicleForm()">＋ Add vehicle</button>')+
+ (vehicles.length?'<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(250px,1fr))">'+vehicles.map(v=>'<div class="card"><div class="row"><span class="tag">PERSONAL VEHICLE</span><span class="muted">'+qbSafe(v.year||'')+'</span></div><div style="font-size:35px;margin:18px 0 8px">🚘</div><div style="font-weight:800;font-size:17px">'+qbSafe(v.make)+' '+qbSafe(v.model)+'</div><div class="muted">'+qbSafe(v.variant||'')+' · '+qbSafe(v.fuel||'')+' · '+qbSafe(v.trans||'')+'</div><div style="background:#f5f4fa;border:1px solid #e7e5ef;border-radius:7px;padding:9px;text-align:center;font-weight:800;letter-spacing:2px;margin:15px 0">'+qbSafe(v.reg)+'</div><div class="muted">Odometer: '+qbSafe(v.odo||'—')+' km</div><button class="btn light" style="margin-top:13px" onclick="editVehicle('+JSON.stringify(String(v.id))+')">Edit vehicle</button></div>').join('')+'</div>':empty('🚘','Your garage is empty','Add your first vehicle to make booking faster.','<button class="btn" onclick="vehicleForm()">Add a vehicle</button>'));
+}
+function editVehicle(id){
+ const v=vehicles.find(x=>String(x.id)===String(id));if(!v)return;
+ if(!authUser||!supabaseClient){toast('Sign in to edit saved vehicles.');return}
+ modal('Edit vehicle','Update your saved vehicle details.','<form onsubmit="saveVehicleEdit(event,'+JSON.stringify(String(id))+')"><div class="formgrid">'+
+ '<label>Registration number<input class="field" name="reg" required value="'+qbSafe(v.reg)+'"></label>'+
+ '<label>Manufacturer<input class="field" name="make" required value="'+qbSafe(v.make)+'"></label>'+
+ '<label>Model<input class="field" name="model" required value="'+qbSafe(v.model)+'"></label>'+
+ '<label>Variant<input class="field" name="variant" value="'+qbSafe(v.variant)+'"></label>'+
+ '<label>Manufacturing year<input class="field" name="year" type="number" min="1950" max="2100" value="'+qbSafe(v.year)+'"></label>'+
+ '<label>Fuel type<select name="fuel">'+['Petrol','Diesel','CNG','Electric','Hybrid'].map(x=>'<option '+(v.fuel===x?'selected':'')+'>'+x+'</option>').join('')+'</select></label>'+
+ '<label>Transmission<select name="trans">'+['Manual','Automatic'].map(x=>'<option '+(v.trans===x?'selected':'')+'>'+x+'</option>').join('')+'</select></label>'+
+ '<label>Odometer (km)<input class="field" name="odo" type="number" min="0" value="'+qbSafe(v.odo)+'"></label></div><button class="btn">Save changes</button></form>');
+}
+async function saveVehicleEdit(e,id){
+ e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const {error}=await supabaseClient.from('vehicles').update({registration_number:d.reg.trim().toUpperCase(),manufacturer:d.make.trim(),model:d.model.trim(),variant:d.variant||null,manufacturing_year:Number(d.year)||null,fuel_type:d.fuel,transmission:d.trans,odometer_km:Number(d.odo)||null,updated_at:new Date().toISOString()}).eq('id',id);
+ if(error){toast(qbErr(error));return}await loadMyVehicles();closeModal();render();toast('Vehicle details updated.');
+}
+async function bookingForm(){
+ if(!vehicles.length){toast('Add a vehicle to My Garage first.');go('My Garage');return}
+ let shops=[];
+ if(authUser&&supabaseClient){const {data,error}=await supabaseClient.from('workshops').select('id,name,city,district').neq('partner_status','suspended').limit(100);if(!error)shops=data||[]}
+ modal('Request an appointment','Create a booking request. No workshop notification or message is sent.','<form onsubmit="saveBooking(event)"><div class="formgrid"><label>Vehicle<select name="vehicle">'+vehicles.map(v=>'<option value="'+qbSafe(v.id)+'">'+qbSafe(v.reg)+' · '+qbSafe(v.make)+' '+qbSafe(v.model)+'</option>').join('')+'</select></label><label>Service<select name="service">'+['Periodic General Service','Engine Oil & Filter','Brake Inspection','AC Service','Wheel Alignment','Suspension Inspection','Full Vehicle Inspection','Battery Check'].map(x=>'<option>'+x+'</option>').join('')+'</select></label><label class="full">Preferred workshop<select name="workshop"><option value="">Let QuickBay help me find a workshop</option>'+shops.map(w=>'<option value="'+qbSafe(w.id)+'">'+qbSafe(w.name)+' · '+qbSafe(w.city||w.district||'')+'</option>').join('')+'</select></label>'+field('Preferred locality','locality','Tiruvallur / Kakkalur')+field('Preferred date','date','','date')+'<label>Preferred time<select name="time"><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label>'+field('Notes (optional)','notes','Describe the issue','text',true)+'</div><div class="notice">This creates a request in QuickBay only. It does not reserve a confirmed time or contact the workshop.</div><button class="btn">Submit booking request</button></form>');
+}
+async function saveBooking(e){
+ e.preventDefault();if(!authUser||!supabaseClient){toast('Sign in to submit a booking request.');return}
+ const d=Object.fromEntries(new FormData(e.target));const preferred=d.date?new Date(d.date+'T10:00:00').toISOString():null;
+ const {data,error}=await supabaseClient.rpc('create_booking_request',{p_vehicle_id:d.vehicle,p_requested_service:d.service,p_preferred_at:preferred,p_workshop_id:d.workshop||null,p_service_id:null,p_customer_notes:[d.locality,d.time,d.notes].filter(Boolean).join(' · ')});
+ if(error){toast(qbErr(error));return}await loadMyBookings();closeModal();go('My Bookings');toast('Booking request saved: '+data.booking_code);
+}
+function bookingsPage(){
+ return head('BOOKINGS','My booking requests','Review the status and details of your service requests.','<button class="btn" onclick="bookingForm()">＋ New request</button>')+
+ (bookings.length?'<div class="tablewrap"><table><thead><tr><th>BOOKING ID</th><th>SERVICE</th><th>PREFERRED DATE</th><th>STATUS</th><th>NOTES</th></tr></thead><tbody>'+bookings.map(b=>'<tr><td><strong>'+qbSafe(b.id)+'</strong></td><td>'+qbSafe(b.service)+'</td><td>'+qbSafe(b.date||'Not set')+'</td><td><span class="status '+(['confirmed','completed'].includes(b.status)?'good':'warn')+'">'+qbSafe(b.status)+'</span></td><td>'+qbSafe(b.notes||'—')+'</td></tr>').join('')+'</tbody></table></div>':empty('▤','No booking requests','When you request a service, it will appear here.','<button class="btn" onclick="bookingForm()">Request an appointment</button>'));
+}
+function tracker(){
+ const active=qbCustomerJobs.filter(j=>j.stage!=='delivered');
+ if(!qbCustomerJobs.length)return head('SERVICE TRACKER','Follow every repair stage','Live job updates appear here when a workshop creates a job card.')+empty('◷','No active repair','There are no service jobs linked to your account yet.');
+ return head('SERVICE TRACKER','Follow every repair stage','Your workshop job cards and their latest recorded status.')+
+ '<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(290px,1fr))">'+qbCustomerJobs.map(j=>'<div class="card"><div class="row"><b>'+qbSafe(j.job_code)+'</b><span class="status '+(j.stage==='delivered'?'good':'warn')+'">'+qbSafe(qbStageLabel(j.stage))+'</span></div><h3>'+qbSafe(j.vehicles?.manufacturer||'Vehicle')+' '+qbSafe(j.vehicles?.model||'')+'</h3><div class="muted">'+qbSafe(j.vehicles?.registration_number||'')+' · '+qbSafe(j.workshops?.name||'Workshop')+'</div><div class="timeline" style="margin-top:18px">'+qbStages.map((st,i)=>'<div class="step '+(qbStages.findIndex(x=>x[0]===j.stage)>=i?'done':'')+'"><div class="dot"></div><div><b>'+st[1]+'</b><small>'+qbDate((j.job_status_history||[]).find(h=>h.new_stage===st[0])?.created_at)+'</small></div></div>').join('')+'</div><div class="muted">Checked in: '+qbDate(j.checked_in_at)+'</div></div>').join('')+'</div>';
+}
+function simpleCustomer(){
+ if(page==='Profile & Settings')return head('YOUR ACCOUNT','Profile & settings','Manage your name and mobile contact number.','<button class="btn" onclick="editProfile()">Edit profile</button>')+'<div class="card"><div class="sectiontitle">Account details</div><p><b>'+qbSafe($('#accountDetailName')?.textContent)+'</b></p><div class="muted">'+qbSafe(authUser?.email||'')+'</div><p>Mobile number: <b>'+qbSafe($('#accountDetailPhone')?.textContent)+'</b></p><div class="notice">Your mobile number is saved as contact information. QuickBay does not use phone OTP or phone-based login.</div></div>';
+ if(page==='Service History'){const done=qbCustomerJobs.filter(j=>j.stage==='delivered');return head('VEHICLE RECORDS','Service history','Completed jobs recorded by your QuickBay workshops.')+(done.length?'<div class="tablewrap"><table><thead><tr><th>JOB</th><th>VEHICLE</th><th>WORKSHOP</th><th>DELIVERED</th></tr></thead><tbody>'+done.map(j=>'<tr><td>'+qbSafe(j.job_code)+'</td><td>'+qbSafe(j.vehicles?.manufacturer)+' '+qbSafe(j.vehicles?.model)+'</td><td>'+qbSafe(j.workshops?.name)+'</td><td>'+qbDate(j.delivered_at)+'</td></tr>').join('')+'</tbody></table></div>':empty('↺','No completed services','Completed service records will appear here.'))}
+ if(page==='Saved Workshops'){const saved=store.get('saved_workshops',[]);return head('YOUR SHORTLIST','Saved workshops','Workshop IDs saved on this device.')+(saved.length?'<div class="notice">Saved workshop references: '+saved.map(qbSafe).join(', ')+'</div>':empty('♡','No saved workshops','Use the Save action on a workshop listing when available.'))}
+ return head('YOUR ACCOUNT',page,'This area is available for future in-app features.')+empty('◇','Nothing here yet','This section will populate as you use QuickBay.');
+}
+/* Workshop OS: every record below is scoped to the authenticated member's workshop. */
+async function qbRefreshWorkshop(){await qbLoadWorkshopContext();render()}
+function workshopOverview(){
+ if(!qbWorkshopId)return head('WORKSHOP OS','Workshop workspace not linked','Your account has a workshop role, but no active workshop membership is linked yet.')+'<div class="notice">Ask a QuickBay platform administrator to attach your account to the correct workshop. No workshop record or real business data has been created here.</div>';
+ return head('WORKSHOP OS',qbSafe(qbWorkshopInfo?.name||'Workshop operations'),'Manage bookings, bays and active repair jobs.','<button class="btn" onclick="newJob()">＋ Create job card</button>')+
+ '<div class="notice"><strong>Connected workshop workspace.</strong> Data below is loaded from the authenticated workshop membership.</div>'+
+ '<div class="grid stats">'+stat('APPOINTMENTS',qbWorkshopBookings.length,'Requests for this workshop')+stat('ACTIVE JOBS',qbWorkshopJobs.filter(j=>j.stage!=='delivered').length,'Open job cards')+stat('AVAILABLE BAYS',qbWorkshopBays.filter(b=>b.status==='available').length,'Of '+qbWorkshopBays.length+' configured bays')+stat('TECHNICIANS',qbTechnicians.filter(t=>t.active).length,'Active team members')+'</div>'+
+ '<div class="grid layout2"><div class="card"><div class="row"><div class="sectiontitle">Bay overview</div><button class="btn light" onclick="go(\\'Bay Management\\')">Manage bays</button></div>'+bayCards()+'</div><div class="card"><div class="sectiontitle">Recent job cards</div>'+(qbWorkshopJobs.length?qbWorkshopJobs.slice(0,5).map(j=>'<div class="row" style="padding:12px 0;border-bottom:1px solid #eee"><div><b>'+qbSafe(j.job_code)+'</b><div class="muted">'+qbSafe(j.vehicles?.registration_number||'Vehicle')+'</div></div><span class="status">'+qbSafe(qbStageLabel(j.stage))+'</span></div>').join(''):empty('▣','No jobs yet','Create a job card from an appointment.'))+'</div></div>';
+}
+function bayCards(){
+ if(!qbWorkshopId)return empty('▦','Workshop not linked','An active workshop membership is required.');
+ return '<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">'+qbWorkshopBays.map(b=>'<div style="padding:14px;border:1px solid #eee;border-radius:12px"><div class="row"><b>'+qbSafe(b.bay_code)+'</b><span class="status '+(b.status==='available'?'good':b.status==='occupied'?'warn':'')+'">'+qbSafe(b.status)+'</span></div><label class="muted" style="display:block;margin-top:12px">Bay status<select class="field" style="width:100%;margin-top:5px" onchange="updateBayStatus('+JSON.stringify(b.id)+',this.value)">'+['available','occupied','reserved','maintenance'].map(x=>'<option value="'+x+'" '+(b.status===x?'selected':'')+'>'+x+'</option>').join('')+'</select></label></div>').join('')+'</div>';
+}
+function bayPage(){
+ return head('CAPACITY','Bay management','Create bays and update their availability.','<button class="btn" onclick="addBayForm()">＋ Add bay</button>')+'<div class="card">'+bayCards()+'</div>';
+}
+function addBayForm(){if(!qbWorkshopId){toast('Workshop membership is required.');return}modal('Add service bay','Add a bay to your workshop.','<form onsubmit="addBay(event)"><div class="formgrid"><label class="full">Bay name / code<input class="field" name="bay_code" required maxlength="40" placeholder="BAY-04"></label></div><button class="btn">Add bay</button></form>')}
+async function addBay(e){e.preventDefault();const code=new FormData(e.target).get('bay_code').trim();const {error}=await supabaseClient.from('bays').insert({workshop_id:qbWorkshopId,bay_code:code,status:'available'});if(error){toast(qbErr(error));return}closeModal();await qbRefreshWorkshop();toast('Bay added.')}
+async function updateBayStatus(id,status){const {error}=await supabaseClient.from('bays').update({status}).eq('id',id).eq('workshop_id',qbWorkshopId);if(error){toast(qbErr(error));await qbRefreshWorkshop();return}await qbRefreshWorkshop();toast('Bay status updated.')}
+function jobPage(){
+ if(!qbWorkshopId)return empty('▣','Workshop not linked','An active workshop membership is required.');
+ return head('WORKSHOP OPERATIONS','Job cards','Track every vehicle from check-in to delivery.','<button class="btn" onclick="newJob()">＋ Create job card</button>')+
+ (qbWorkshopJobs.length?'<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(290px,1fr))">'+qbWorkshopJobs.map(j=>'<div class="card"><div class="row"><b>'+qbSafe(j.job_code)+'</b><span class="status '+(j.stage==='delivered'?'good':'warn')+'">'+qbSafe(qbStageLabel(j.stage))+'</span></div><h3>'+qbSafe(j.vehicles?.manufacturer||'Vehicle')+' '+qbSafe(j.vehicles?.model||'')+'</h3><div class="muted">'+qbSafe(j.vehicles?.registration_number||'')+' · '+qbSafe(j.reported_issue||'No issue notes')+'</div><div class="timeline" style="margin-top:18px">'+qbStages.map((st,i)=>'<div class="step '+(qbStages.findIndex(x=>x[0]===j.stage)>=i?'done':'')+'"><div class="dot"></div><div><b>'+st[1]+'</b></div></div>').join('')+'</div>'+(j.stage!=='delivered'?'<button class="btn" onclick="advanceJob('+JSON.stringify(j.id)+')">Advance stage</button>':'<span class="status good">Delivered</span>')+'</div>').join('')+'</div>':empty('▣','No job cards','Create a job card from a booking request.','<button class="btn" onclick="newJob()">Create job card</button>'));
+}
+function newJob(){
+ if(!qbWorkshopId){toast('Workshop membership is required.');return}
+ const pending=qbWorkshopBookings.filter(b=>!qbWorkshopJobs.some(j=>j.booking_id===b.id)&&!['cancelled','completed'].includes(b.status));
+ if(!pending.length){toast('No unassigned booking requests are available.');go('Appointments');return}
+ modal('Create job card','Create a job card from a booking. No customer message is sent.','<form onsubmit="saveJob(event)"><div class="formgrid"><label class="full">Booking request<select class="field" name="booking" required>'+pending.map(b=>'<option value="'+qbSafe(b.id)+'">'+qbSafe(b.booking_code)+' · '+qbSafe(b.requested_service)+' · '+qbDate(b.preferred_at)+'</option>').join('')+'</select></label><label class="full">Reported issue / intake notes<textarea class="field" name="issue" rows="3" placeholder="Record the customer complaint or check-in notes"></textarea></label><label>Expected completion<input class="field" type="datetime-local" name="expected"></label><label>Assign bay<select class="field" name="bay"><option value="">Not assigned</option>'+qbWorkshopBays.filter(b=>b.status==='available').map(b=>'<option value="'+qbSafe(b.id)+'">'+qbSafe(b.bay_code)+'</option>').join('')+'</select></label></div><button class="btn">Create job card</button></form>');
+}
+async function saveJob(e){
+ e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const b=qbWorkshopBookings.find(x=>x.id===d.booking);if(!b)return;
+ const code='QB-J-'+Date.now().toString().slice(-8);
+ const {data,error}=await supabaseClient.from('job_cards').insert({job_code:code,workshop_id:qbWorkshopId,booking_id:b.id,vehicle_id:b.vehicle_id,customer_id:b.customer_id,reported_issue:d.issue||b.customer_notes||null,stage:'check_in',bay_id:d.bay||null,expected_completion:d.expected?new Date(d.expected).toISOString():null}).select('id').single();
+ if(error){toast(qbErr(error));return}
+ if(d.bay)await supabaseClient.from('bays').update({status:'occupied'}).eq('id',d.bay).eq('workshop_id',qbWorkshopId);
+ await supabaseClient.from('bookings').update({status:'confirmed'}).eq('id',b.id).eq('workshop_id',qbWorkshopId);
+ closeModal();await qbRefreshWorkshop();toast('Job card created: '+code);
+}
+async function advanceJob(id){
+ const j=qbWorkshopJobs.find(x=>x.id===id);if(!j||j.stage==='delivered')return;
+ const next=qbStages[qbStages.findIndex(x=>x[0]===j.stage)+1];if(!next)return;
+ const {error}=await supabaseClient.rpc('advance_job_stage',{p_job_id:id,p_new_stage:next[0],p_note:null});
+ if(error){toast(qbErr(error));return}await qbRefreshWorkshop();toast('Job moved to '+next[1]+'.');
+}
+function appointmentsPage(){
+ return head('SCHEDULE','Appointments','Review booking requests assigned to this workshop.')+
+ (qbWorkshopBookings.length?'<div class="tablewrap"><table><thead><tr><th>BOOKING</th><th>SERVICE</th><th>PREFERRED</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>'+qbWorkshopBookings.map(b=>'<tr><td><b>'+qbSafe(b.booking_code)+'</b></td><td>'+qbSafe(b.requested_service)+'</td><td>'+qbDate(b.preferred_at)+'</td><td><span class="status">'+qbSafe(b.status)+'</span></td><td>'+(b.status==='requested'?'<button class="btn light" onclick="setBookingStatus('+JSON.stringify(b.id)+',\\'confirmed\\')">Confirm</button>':'—')+'</td></tr>').join('')+'</tbody></table></div>':empty('▤','No appointments','New requests assigned to this workshop will appear here.'));
+}
+async function setBookingStatus(id,status){const {error}=await supabaseClient.from('bookings').update({status}).eq('id',id).eq('workshop_id',qbWorkshopId);if(error){toast(qbErr(error));return}await qbRefreshWorkshop();toast('Booking status updated.')}
+function techniciansPage(){
+ return head('TEAM','Technicians','Manage your workshop team directory.','<button class="btn" onclick="technicianForm()">＋ Add technician</button>')+
+ (qbTechnicians.length?'<div class="tablewrap"><table><thead><tr><th>NAME</th><th>SPECIALISATIONS</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>'+qbTechnicians.map(t=>'<tr><td><b>'+qbSafe(t.display_name)+'</b></td><td>'+qbSafe((t.specialisations||[]).join(', ')||'—')+'</td><td>'+qbSafe(t.active?'Active':'Inactive')+'</td><td>'+(t.active?'<button class="btn light" onclick="setTechnicianActive('+JSON.stringify(t.id)+',false)">Deactivate</button>':'<button class="btn light" onclick="setTechnicianActive('+JSON.stringify(t.id)+',true)">Reactivate</button>')+'</td></tr>').join('')+'</tbody></table></div>':empty('♙','No technicians yet','Add your workshop team members.'));
+}
+function technicianForm(){modal('Add technician','Add a team member to this workshop.','<form onsubmit="addTechnician(event)"><div class="formgrid">'+field('Technician name','name','Full name')+field('Specialisations','skills','Engine, AC, brakes','text',true)+'</div><button class="btn">Add technician</button></form>')}
+async function addTechnician(e){e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const {error}=await supabaseClient.from('technicians').insert({workshop_id:qbWorkshopId,display_name:d.name.trim(),specialisations:d.skills.split(',').map(x=>x.trim()).filter(Boolean),active:true});if(error){toast(qbErr(error));return}closeModal();await qbRefreshWorkshop();toast('Technician added.')}
+async function setTechnicianActive(id,active){const {error}=await supabaseClient.from('technicians').update({active}).eq('id',id).eq('workshop_id',qbWorkshopId);if(error){toast(qbErr(error));return}await qbRefreshWorkshop();}
+function workshopPages(){
+ if(page==='Overview')return workshopOverview();
+ if(page==='Bay Management')return bayPage();
+ if(page==='Appointments')return appointmentsPage();
+ if(page==='Job Cards')return jobPage();
+ if(page==='Technicians')return techniciansPage();
+ if(page==='Estimates')return head('SERVICE APPROVAL','Estimates','Review estimates associated with your job cards.')+empty('₹','Estimate workflow needs a line-item permission check','The database currently allows workshop estimate records but does not yet expose a safe estimate-item write policy. No estimate has been created.');
+ if(page==='Invoices')return head('BILLING','Invoices','View invoice records. Payment processing is disabled.')+empty('▤','No invoices','Invoices will appear here when a workshop issues them. QuickBay will not collect or process payments.');
+ if(page==='Parts & Inventory')return head('STOCK CONTROL','Parts & inventory','Inventory module is being connected to a dedicated stock ledger.')+empty('⚙','Inventory setup pending','No stock records have been created or imported.');
+ if(page==='Old Parts Returns')return head('PARTS HANDOVER','Old parts returns','Record and review removed parts after a job.')+empty('↩','No parts-return records','Parts handover records will appear here when linked to job cards.');
+ if(page==='Reports')return head('WORKSHOP INSIGHTS','Reports','Live figures from your workshop records.')+'<div class="grid stats">'+stat('BOOKINGS',qbWorkshopBookings.length,'All workshop requests')+stat('OPEN JOBS',qbWorkshopJobs.filter(j=>j.stage!=='delivered').length,'Not yet delivered')+stat('DELIVERED',qbWorkshopJobs.filter(j=>j.stage==='delivered').length,'Completed jobs')+stat('ACTIVE TECHNICIANS',qbTechnicians.filter(t=>t.active).length,'Team members')+'</div>';
+ if(page==='Vehicles & Customers')return head('CUSTOMER INTAKE','Vehicles & customers','Vehicles attached to your workshop job cards.')+(qbWorkshopJobs.length?'<div class="tablewrap"><table><thead><tr><th>VEHICLE</th><th>REGISTRATION</th><th>JOB</th><th>STAGE</th></tr></thead><tbody>'+qbWorkshopJobs.map(j=>'<tr><td>'+qbSafe(j.vehicles?.manufacturer)+' '+qbSafe(j.vehicles?.model)+'</td><td>'+qbSafe(j.vehicles?.registration_number)+'</td><td>'+qbSafe(j.job_code)+'</td><td>'+qbSafe(qbStageLabel(j.stage))+'</td></tr>').join('')+'</tbody></table></div>':empty('♙','No customer vehicles','Vehicle details appear when bookings are converted into job cards.'));
+ if(page==='Settings')return head('WORKSHOP SETTINGS','Workshop profile','Your linked workshop information.')+'<div class="card"><b>'+qbSafe(qbWorkshopInfo?.name||'Workshop not linked')+'</b><div class="muted">'+qbSafe([qbWorkshopInfo?.address,qbWorkshopInfo?.locality,qbWorkshopInfo?.city,qbWorkshopInfo?.district,qbWorkshopInfo?.state].filter(Boolean).join(', '))+'</div></div>';
+ return head('WORKSHOP OS',page,'This module is being connected to the workshop database.')+empty('◇','Not available yet','No external services or real customer communications are enabled.');
+}
+/* Admin workspace: read from RLS-protected tables; application decisions only update the application row. */
+function adminOverview(){
+ const pending=qbAdmin.applications.filter(a=>a.status==='pending_review').length;
+ return head('PLATFORM CONTROL','QuickBay administration','Live platform records available to your authenticated administrator.')+
+ '<div class="grid stats">'+stat('CUSTOMERS',qbAdmin.profiles.filter(p=>p.role==='vehicle_owner').length,'Registered customer profiles')+stat('WORKSHOPS',qbAdmin.workshops.length,'Workshop records')+stat('PENDING APPLICATIONS',pending,'Awaiting review')+stat('BOOKINGS',qbAdmin.bookings.length,'Booking records')+'</div>'+
+ '<div class="grid layout2"><div class="card"><div class="row"><div class="sectiontitle">Partner applications</div><button class="btn light" onclick="go(\\'Workshop Applications\\')">Review queue</button></div>'+(qbAdmin.applications.slice(0,5).map(a=>'<div class="row" style="padding:12px 0;border-bottom:1px solid #eee"><div><b>'+qbSafe(a.workshop_name)+'</b><div class="muted">'+qbSafe(a.application_code)+' · '+qbSafe(a.city)+'</div></div><span class="status">'+qbSafe(a.status)+'</span></div>').join('')||empty('▤','No applications','New partner applications will appear here.'))+'</div><div class="card"><div class="sectiontitle">Platform overview</div><div class="muted">Data is loaded from Supabase under your administrator role. No records are being published, imported or deleted by this dashboard.</div></div></div>';
+}
+function applicationsPage(){
+ return head('PARTNER NETWORK','Workshop applications','Review submitted workshop applications. Decisions update application status only.')+
+ (qbAdmin.applications.length?'<div class="tablewrap"><table><thead><tr><th>REFERENCE</th><th>WORKSHOP</th><th>OWNER</th><th>LOCATION</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>'+qbAdmin.applications.map(a=>'<tr><td><b>'+qbSafe(a.application_code)+'</b></td><td>'+qbSafe(a.workshop_name)+'</td><td>'+qbSafe(a.owner_name)+'</td><td>'+qbSafe([a.city,a.state,a.pincode].filter(Boolean).join(', '))+'</td><td>'+qbSafe(a.status)+'</td><td><button class="btn light" onclick="reviewApp('+JSON.stringify(a.id)+')">Review</button></td></tr>').join('')+'</tbody></table></div>':empty('▤','No applications','No workshop applications have been submitted.'));
+}
+function reviewApp(id){
+ const a=qbAdmin.applications.find(x=>x.id===id);if(!a)return;
+ modal(qbSafe(a.workshop_name),'Application '+qbSafe(a.application_code),'<div class="muted">'+qbSafe(a.owner_name)+' · '+qbSafe(a.phone)+' · '+qbSafe(a.email)+'<br>'+qbSafe([a.address,a.city,a.state,a.pincode].filter(Boolean).join(', '))+'<br>'+qbSafe((a.services||[]).join(', '))+' · '+qbSafe(a.bay_count||'Not supplied')+' bays</div><div class="notice" style="margin-top:16px">Reviewing this application does not publish a workshop listing or mark it QuickBay-verified.</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="setApp('+JSON.stringify(id)+',\\'approved\\')">Approve application</button><button class="btn light" onclick="setApp('+JSON.stringify(id)+',\\'rejected\\')">Reject application</button></div>');
+}
+async function setApp(id,status){
+ const {error}=await supabaseClient.from('workshop_applications').update({status,updated_at:new Date().toISOString()}).eq('id',id);
+ if(error){toast(qbErr(error));return}closeModal();await qbLoadAdminData();render();toast('Application status updated. No listing was published.');
+}
+function adminDataPage(){
+ if(page==='Customers')return head('CUSTOMER ACCOUNTS','Customers','Customer profiles visible to platform administrators.')+(qbAdmin.profiles.length?'<div class="tablewrap"><table><thead><tr><th>NAME</th><th>EMAIL</th><th>MOBILE</th><th>ROLE</th><th>JOINED</th></tr></thead><tbody>'+qbAdmin.profiles.map(p=>'<tr><td>'+qbSafe(p.full_name)+'</td><td>'+qbSafe(p.email)+'</td><td>'+qbSafe(p.phone)+'</td><td>'+qbSafe(p.role)+'</td><td>'+qbDate(p.created_at)+'</td></tr>').join('')+'</tbody></table></div>':empty('♙','No profiles','No profiles are visible.'));
+ if(page==='Bookings')return head('BOOKING CONTROL','Bookings','Booking records across the platform.')+(qbAdmin.bookings.length?'<div class="tablewrap"><table><thead><tr><th>BOOKING</th><th>SERVICE</th><th>STATUS</th><th>PREFERRED</th></tr></thead><tbody>'+qbAdmin.bookings.map(b=>'<tr><td>'+qbSafe(b.booking_code)+'</td><td>'+qbSafe(b.requested_service)+'</td><td>'+qbSafe(b.status)+'</td><td>'+qbDate(b.preferred_at)+'</td></tr>').join('')+'</tbody></table></div>':empty('▤','No bookings','No booking records.'));
+ if(page==='Partner Directory')return head('PARTNER NETWORK','Partner directory','Workshop records and their review/publication states.')+(qbAdmin.workshops.length?'<div class="tablewrap"><table><thead><tr><th>WORKSHOP</th><th>LOCATION</th><th>STATUS</th><th>PUBLIC DISPLAY</th><th>VERIFIED</th></tr></thead><tbody>'+qbAdmin.workshops.map(w=>'<tr><td>'+qbSafe(w.name)+'</td><td>'+qbSafe(w.city||w.district||w.state)+'</td><td>'+qbSafe(w.partner_status)+'</td><td>'+qbSafe(w.public_display_permitted?'Permitted':'Not permitted')+'</td><td>'+qbSafe(w.is_quickbay_verified?'Yes':'No')+'</td></tr>').join('')+'</tbody></table></div>':empty('▣','No workshop records','No workshops have been published or imported.'));
+ if(page==='Service Categories')return head('CATALOGUE','Service categories','Existing service categories in QuickBay.')+'<div class="tablewrap"><table><thead><tr><th>NAME</th><th>DESCRIPTION</th><th>STATUS</th></tr></thead><tbody>'+qbAdmin.categories.map(c=>'<tr><td>'+qbSafe(c.name)+'</td><td>'+qbSafe(c.description)+'</td><td>'+qbSafe(c.active?'Active':'Inactive')+'</td></tr>').join('')+'</tbody></table></div>';
+ if(page==='Analytics')return head('PLATFORM INSIGHTS','Analytics','Current totals from the connected database.')+'<div class="grid stats">'+stat('PROFILES',qbAdmin.profiles.length,'All visible roles')+stat('WORKSHOPS',qbAdmin.workshops.length,'Workshop records')+stat('APPLICATIONS',qbAdmin.applications.length,'Applications')+stat('BOOKINGS',qbAdmin.bookings.length,'Booking records')+'</div>';
+ if(page==='Audit Logs')return head('SECURITY','Audit logs','Recent administrator-visible audit events.')+(qbAdmin.audit.length?'<div class="tablewrap"><table><thead><tr><th>TIME</th><th>ACTOR</th><th>ACTION</th><th>ENTITY</th><th>DETAILS</th></tr></thead><tbody>'+qbAdmin.audit.map(a=>'<tr><td>'+qbDate(a.created_at)+'</td><td>'+qbSafe(a.actor_id)+'</td><td>'+qbSafe(a.action)+'</td><td>'+qbSafe(a.entity_type)+' · '+qbSafe(a.entity_id)+'</td><td>'+qbSafe(JSON.stringify(a.details||{}))+'</td></tr>').join('')+'</tbody></table></div>':empty('≡','No audit events','No audit events are available.'));
+ return head('ADMINISTRATION',page,'This admin module is being connected.')+empty('◇','Not connected yet','No external notifications or data imports are enabled.');
+}
+const qbOriginalRender=render;
+render=function(){
+ if(mode==='admin'&&authUser&&['super_admin','platform_admin'].includes(authRole)){
+  shell();let v=page==='Overview'?adminOverview():page==='Workshop Applications'?applicationsPage():adminDataPage();$('#view').innerHTML=v;return;
+ }
+ if(mode==='workshop'&&authUser){shell();$('#view').innerHTML=workshopPages();return}
+ qbOriginalRender();
+};
+const qbOriginalDirectory=loadWorkshopDirectory;
+loadWorkshopDirectory=async function(){
+ const target=$('#results');if(!target)return;if(!supabaseClient){target.innerHTML=empty('⌖','Backend connection required','Connect the QuickBay Supabase project to search permitted workshop listings.');return}
+ target.innerHTML='<div class="card">Loading permitted workshop listings…</div>';
+ let q=($('#q')?.value||'').trim().replace(/[^a-zA-Z0-9\\s-]/g,' ');
+ let query=supabaseClient.from('workshops').select('id,name,category,address,locality,city,district,state,pincode,latitude,longitude,rating,review_count,services,supported_brands,phone,website,listing_source,source_attribution,partner_status,is_quickbay_verified,public_display_permitted').neq('partner_status','suspended').or('partner_status.eq.approved,and(public_display_permitted.eq.true,listing_source.neq.workshop_submitted)');
+ if(q)query=query.or('name.ilike.%'+q+'%,city.ilike.%'+q+'%,district.ilike.%'+q+'%,state.ilike.%'+q+'%,pincode.ilike.%'+q+'%,address.ilike.%'+q+'%');
+ if($('#serviceFilter')?.value)query=query.eq('category',$('#serviceFilter').value);
+ if($('#ratingFilter')?.value)query=query.gte('rating',Number($('#ratingFilter').value);
+ let {data,error}=await query.limit(100);if(error){target.innerHTML=empty('⚠','Could not load listings',qbErr(error));return}
+ if($('#sortFilter')?.value==='rating')data.sort((a,b)=>(b.rating||-1)-(a.rating||-1));
+ $('#directoryNotice').innerHTML='<strong>'+data.length+' listings returned.</strong> Source-attributed directory records only; QuickBay verification is shown separately.';
+ if(!data.length){target.innerHTML=empty('⌖','No matching workshops','No permitted listings match your search.');return}
+ const saved=store.get('saved_workshops',[]);
+ target.innerHTML='<div class="workshoplist">'+data.map(w=>{
+  const addr=[w.address,w.locality,w.city,w.district,w.state,w.pincode].filter(Boolean).join(', ');
+  const rating=w.rating==null?'':'<div class="muted">★ '+qbSafe(w.rating)+(w.review_count!=null?' · '+qbSafe(w.review_count)+' reviews':'')+'</div>';
+  const directions=w.latitude!=null&&w.longitude!=null?'https://www.openstreetmap.org/directions?to='+w.latitude+'%2C'+w.longitude:null;
+  const verified=w.is_quickbay_verified&&w.partner_status==='approved';
+  return '<article class="workshop"><div class="shopicon">🔧</div><div><div class="shopname">'+qbSafe(w.name)+'</div><div class="muted">'+qbSafe(addr||'Address not supplied')+'</div>'+rating+'<div><span class="tag">'+qbSafe(w.category||'Automotive service')+'</span><span class="tag">'+qbSafe(w.listing_source||'Source not recorded')+'</span><span class="tag">'+(verified?'QuickBay verified':w.partner_status==='approved'?'Registered partner':'Third-party listing · not verified')+'</span></div><div class="muted">'+qbSafe(w.source_attribution||'')+'</div></div><div class="actions"><button class="btn light" onclick="toggleSavedWorkshop('+JSON.stringify(w.id)+')">'+(saved.includes(w.id)?'Saved':'♡ Save')+'</button>'+(directions?'<a class="btn light" target="_blank" rel="noopener" href="'+directions+'">Directions</a>':'')+'</div></article>';
+ }).join('')+'</div>';
+};
+function toggleSavedWorkshop(id){let saved=store.get('saved_workshops',[]);saved=saved.includes(id)?saved.filter(x=>x!==id):saved.concat(id);store.set('saved_workshops',saved);toast(saved.includes(id)?'Workshop saved.':'Workshop removed from saved list.');loadWorkshopDirectory();}
+</script>
+</body></html>
