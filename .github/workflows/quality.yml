@@ -1,0 +1,40 @@
+name: QuickBay quality checks
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quickbay-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  syntax:
+    name: Syntax and source checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check Node.js modules
+        run: |
+          node --check scripts/import-workshops.mjs
+          node --check workflows.js
+
+      - name: Compile Python collector
+        run: python -m py_compile scripts/fetch_osm_workshops.py
