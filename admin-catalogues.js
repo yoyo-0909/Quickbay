@@ -47,3 +47,20 @@ async function toggleVehicleCatalogue(id,active){
  const {error}=await supabaseClient.from('vehicle_catalogue').update({active:active==='true',updated_at:new Date().toISOString()}).eq('id',id);
  if(error){toast(qbErr(error));return}await qbLoadAdminData();render();toast('Vehicle catalogue status updated.');
 }
+
+
+const qbVehicleFormBase=vehicleForm;
+vehicleForm=async function(){
+ let catalog=[];
+ if(supabaseClient){const {data,error}=await supabaseClient.from('vehicle_catalogue').select('make,model,variant,fuel_types').eq('active',true).order('make').order('model');if(!error)catalog=data||[]}
+ const makes=[...new Set(catalog.map(x=>x.make))],models=[...new Set(catalog.map(x=>x.model))],fuels=[...new Set(catalog.flatMap(x=>x.fuel_types||[]))];
+ const fuelOptions=[...new Set(['Petrol','Diesel','CNG','Electric','Hybrid',...fuels])];
+ modal('Add a vehicle','Save a vehicle to your QuickBay garage. Catalogue suggestions appear when available.','<form onsubmit="saveVehicle(event)"><div class="formgrid">'+
+ field('Registration number','reg','TN 00 AB 1234')+
+ '<label>Manufacturer<input class="field" name="make" list="qbVehicleMakes" placeholder="e.g. Tata" required><datalist id="qbVehicleMakes">'+makes.map(x=>'<option value="'+qbSafe(x)+'"></option>').join('')+'</datalist></label>'+
+ '<label>Model<input class="field" name="model" list="qbVehicleModels" placeholder="e.g. Nexon" required><datalist id="qbVehicleModels">'+models.map(x=>'<option value="'+qbSafe(x)+'"></option>').join('')+'</datalist></label>'+
+ field('Variant','variant','e.g. Creative+')+field('Manufacturing year','year','2022','number')+
+ '<label>Fuel type<select name="fuel">'+fuelOptions.map(x=>'<option>'+qbSafe(x)+'</option>').join('')+'</select></label>'+
+ '<label>Transmission<select name="trans"><option>Manual</option><option>Automatic</option></select></label>'+
+ field('Current odometer (km)','odo','e.g. 24000','number')+'</div><button class="btn">Save vehicle</button></form>');
+};
