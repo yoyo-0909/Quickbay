@@ -22,6 +22,7 @@
   <img src="https://img.shields.io/badge/FRONTEND-VANILLA%20JS-111111?style=flat-square&labelColor=111111" alt="Vanilla JavaScript" />
   <img src="https://img.shields.io/badge/BACKEND-SUPABASE-111111?style=flat-square&labelColor=111111" alt="Supabase" />
   <img src="https://img.shields.io/badge/DEPLOYMENT-VERCEL-111111?style=flat-square&labelColor=111111" alt="Vercel" />
+  <img src="https://github.com/yoyo-0909/Quickbay/actions/workflows/validate.yml/badge.svg?branch=work%2Fquickbay-completion" alt="JavaScript validation" />
 </p>
 
 <p><em>Every bay. Every job. One platform.</em></p>
