@@ -12,6 +12,9 @@ The live database already contains the core schema from migrations `0001` throug
 - `0007_lock_inventory_ledger_permissions.sql`: restricts stock quantity changes to the audited inventory RPC and limits notification updates to `read_at`.
 - `0008_private_inventory_rpc.sql`: moves the privileged stock movement implementation into the private schema; the public RPC is an invoker wrapper.
 - `0009_move_btree_gist_to_extensions.sql`: moves the relocatable booking-slot exclusion extension out of the exposed `public` schema.
+- `0010_rls_initplan_and_fk_indexes.sql`: optimises `auth.uid()` evaluation in policies and adds missing foreign-key indexes.
+- `0011_support_and_saved_workshops.sql`: adds private support tickets/messages and account-level saved workshop references.
+- `0012_private_workshop_reviews.sql`: adds private customer feedback and admin moderation; reviews are not published.
 
 Do not reapply the original core migrations to an already-provisioned database. Apply future migrations in order and verify them before connecting new UI workflows.
 
