@@ -1,0 +1,21 @@
+# Local environment and credentials
+.env
+.env.*
+!.env.example
+
+# Dependencies and generated Python files
+node_modules/
+__pycache__/
+*.py[cod]
+
+# Local exports and source datasets
+*.csv
+*.geojson
+*.jsonl
+*.pbf
+
+# Operating system / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
