@@ -23,7 +23,7 @@ QuickBay is an India-focused automotive workshop marketplace and workshop operat
 - Admin: platform overview, customer/profile list, booking list, workshop applications, partner directory, service categories, analytics and audit log views.
 
 ## Backend
-The Supabase project contains the core profiles, workshops, workshop membership, vehicles, services, bookings, bays, technicians, job cards, estimates, invoices, parts-return and audit tables. Migrations `0001`–`0005` established the core schema and security helpers. Migrations `0006` and `0007` add inventory, in-app notification storage, customer cancellation rules, estimate-item access and a restricted inventory movement RPC.
+The Supabase project contains the core profiles, workshops, workshop membership, vehicles, services, bookings, bays, technicians, job cards, estimates, invoices, parts-return and audit tables. Migrations `0001`–`0005` established the core schema and security helpers. Migrations `0006`–`0008` add inventory, in-app notification storage, customer cancellation rules, estimate-item access and a private-schema inventory movement implementation.
 
 See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for environment and migration notes.
 
