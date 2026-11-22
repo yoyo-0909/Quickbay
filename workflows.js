@@ -34,13 +34,12 @@ completeAuth=async function(user){
  await qbCompleteAuthBase(user);
  if(!authUser||!supabaseClient)return;
  await qbLoadCustomerNotifications();
- if(['workshop_owner','workshop_manager','service_advisor','technician'].includes(authRole))await qbLoadWorkshopContext();
  render();
 };
 menus.workshop.splice(6,0,['Service Catalogue','⚙']);
 const qbBookingsPageBase=bookingsPage;
 bookingsPage=function(){
- const rows=bookings.map(b=>'<tr><td><b>'+qbSafe(b.id)+'</b></td><td>'+qbSafe(b.service)+'</td><td>'+qbSafe(b.date||'Not set')+'</td><td><span class="status">'+qbSafe(b.status)+'</span></td><td>'+qbSafe(b.notes||'—')+'</td><td>'+(authUser&&['requested','rescheduled'].includes(b.status)?'<button class="btn light" data-id="'+qbSafe(b.uuid)+'" onclick="cancelBooking(this.dataset.id)">Cancel</button>':'—')+'</td></tr>').join('');
+ const rows=bookings.map(b=>'<tr><td><b>'+qbSafe(b.id)+'</b></td><td>'+qbSafe(b.service)+'</td><td>'+qbSafe(b.date||'Not set')+'</td><td><span class="status">'+qbSafe(b.status)+'</span></td><td>'+qbSafe(b.notes||'—')+'</td><td>'+(authUser&&['requested','rescheduled','confirmed'].includes(b.status)?'<button class="btn light" data-id="'+qbSafe(b.uuid)+'" onclick="cancelBooking(this.dataset.id)">Cancel</button>':'—')+'</td></tr>').join('');
  return head('BOOKINGS','My booking requests','Review your requests. Cancellation is available before workshop work begins.','<button class="btn" onclick="bookingForm()">＋ New request</button>')+
  (bookings.length?'<div class="tablewrap"><table><thead><tr><th>BOOKING ID</th><th>SERVICE</th><th>PREFERRED DATE</th><th>STATUS</th><th>NOTES</th><th>ACTION</th></tr></thead><tbody>'+rows+'</tbody></table></div>':empty('▤','No booking requests','When you request a service, it will appear here.','<button class="btn" onclick="bookingForm()">Request an appointment</button>'));
 };
@@ -174,3 +173,15 @@ workshopPages=function(){
  if(page==='Old Parts Returns')return partsReturnsPage();
  return qbWorkshopPagesBase();
 };
+
+
+const qbJobPageBase=jobPage;
+jobPage=function(){
+ if(!qbWorkshopId)return qbJobPageBase();
+ return head('WORKSHOP OPERATIONS','Job cards','Track vehicles, assign technicians and advance repair stages.','<button class="btn" onclick="newJob()">＋ Create job card</button>')+
+ (qbWorkshopJobs.length?'<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(290px,1fr))">'+qbWorkshopJobs.map(j=>'<div class="card"><div class="row"><b>'+qbSafe(j.job_code)+'</b><span class="status '+(j.stage==='delivered'?'good':'warn')+'">'+qbSafe(qbStageLabel(j.stage))+'</span></div><h3>'+qbSafe(j.vehicles?.manufacturer||'Vehicle')+' '+qbSafe(j.vehicles?.model||'')+'</h3><div class="muted">'+qbSafe(j.vehicles?.registration_number||'')+' · '+qbSafe(j.reported_issue||'No issue notes')+'</div><label class="muted" style="display:block;margin-top:12px">Assigned technician<select class="field" style="width:100%;margin-top:5px" data-job="'+qbSafe(j.id)+'" onchange="assignTechnician(this.dataset.job,this.value)"><option value="">Unassigned</option>'+qbTechnicians.map(t=>'<option value="'+qbSafe(t.id)+'" '+(j.technician_id===t.id?'selected':'')+'>'+qbSafe(t.display_name)+(t.active?'':' (inactive)')+'</option>').join('')+'</select></label><div class="timeline" style="margin-top:18px">'+qbStages.map((st,i)=>'<div class="step '+(qbStages.findIndex(x=>x[0]===j.stage)>=i?'done':'')+'"><div class="dot"></div><div><b>'+st[1]+'</b></div></div>').join('')+'</div>'+(j.stage!=='delivered'?'<button class="btn" data-id="'+qbSafe(j.id)+'" onclick="advanceJob(this.dataset.id)">Advance stage</button>':'<span class="status good">Delivered</span>')+'</div>').join('')+'</div>':empty('▣','No job cards','Create a job card from a booking request.','<button class="btn" onclick="newJob()">Create job card</button>'));
+};
+async function assignTechnician(jobId,technicianId){
+ const {error}=await supabaseClient.from('job_cards').update({technician_id:technicianId||null,updated_at:new Date().toISOString()}).eq('id',jobId).eq('workshop_id',qbWorkshopId);
+ if(error){toast(qbErr(error));return}await qbRefreshWorkshop();toast('Technician assignment updated.');
+}
