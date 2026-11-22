@@ -55,28 +55,18 @@
  };
  let location=null,rows=[],map=null,markers=[],locationAttempted=false;
  const DEMO_TIRUVALLUR = [
-{name:"Splash Automotive",locality:"PH Road, Manavalanagar",rating:4.9,count:307,highlight:"OEM Parts Authorized • Modern Detailing",category:"Automotive workshop",distance:2.1},
-{name:"PK Auto Cool Car Service",locality:"Ondikuppam, Manavalanagar",rating:4.7,count:62,highlight:"AC Recovery Systems & Periodic Bay",category:"Car AC service",distance:2.8},
-{name:"SVTV Auto Car Garage",locality:"Venkateswara College Rd, Tirupasur",rating:5,count:48,highlight:"Brake Lathe & Suspension Tuning",category:"Automotive workshop",distance:4.5},
-{name:"Sri Krishna Multicar Service",locality:"Kakkalur Industrial Estate Bypass",rating:4.8,count:312,highlight:"Hydraulic Lifts & Laser Alignment",category:"Multi-brand car service",distance:2.4},
-{name:"Bosch Car Service (Venkateshwara)",locality:"Jawahar Road, Poonga Nagar",rating:4.9,count:420,highlight:"Bosch Electronic Diagnostics & ECU",category:"Brand service centre",distance:3.1},
-{name:"Sri Balaji Auto Garage",locality:"Old Collector Office Rd, Manavalanagar",rating:4.6,count:95,highlight:"Engine Diagnostics & Rapid Oil Bay",category:"Automotive workshop",distance:1.8},
-{name:"AK Automobiles",locality:"Appasamy Salai, Poonga Nagar",rating:4.7,count:84,highlight:"OBD2 Diagnostics & Clutch Tuning",category:"Automotive workshop",distance:3.2},
-{name:"Gears Motortune",locality:"Poonga Nagar, Tiruvallur",rating:4.8,count:71,highlight:"Shock Absorbers & Steering Overhaul",category:"Automotive workshop",distance:3.5},
-{name:"5K Car Care Tiruvallur",locality:"Poonamallee High Rd, Devi Nagar",rating:4.9,count:412,highlight:"Foam Detailing & Periodic Bay",category:"Car care",distance:2.3},
-{name:"Sri Guru Bagavan Atoz Motor World",locality:"Kakkalur Industrial Estate",rating:4.6,count:110,highlight:"Heavy Engine Overhaul Specialists",category:"Automotive workshop",distance:5.1},
-{name:"Amma Automobiles",locality:"TNHB Kakkalur Bypass",rating:4.5,count:53,highlight:"Clutch Plate & Master Cylinder",category:"Automotive workshop",distance:4.9},
-{name:"Master Automobiles",locality:"Sevvapet Road Junction",rating:4.8,count:66,highlight:"Electrical Wiring & Starters",category:"Auto electrical",distance:8.4},
-{name:"VGN Auto Service",locality:"PH Road, Manavalanagar",rating:4.7,count:88,highlight:"Express 90-Minute Periodic Bay",category:"Automotive workshop",distance:1.5},
-{name:"Sairam 369 Engine Care",locality:"Reddy Palayam, Tiruvallur",rating:4.6,count:42,highlight:"Decarbonization & Injector Flush",category:"Engine service",distance:3.9},
-{name:"J M Brothers AC & Electrical",locality:"Veera Raghava Nagar Bypass",rating:4.9,count:128,highlight:"AC Leak Detection & Condenser Wash",category:"Auto AC & electrical",distance:2.7},
-{name:"Smile Care Autos",locality:"Komathi Nagar, Polivakkam",rating:4.4,count:39,highlight:"Disc Resurfacing & Brake Calipers",category:"Automotive workshop",distance:7.2},
-{name:"Sea Car Care Junction",locality:"Appaswamy Salai, Poonga Nagar",rating:4.8,count:76,highlight:"Underchassis Anti-Rust Spray",category:"Car care",distance:3},
-{name:"Raj Brothers Car Care",locality:"Erayamangalam Rd, Tiruvallur",rating:4.7,count:59,highlight:"Maruti MGP Authentic Spares",category:"Car care",distance:6.8},
-{name:"Swarna Auto Electrical Works",locality:"Chennai-Tiruttani Hwy, MGM Nagar",rating:4.8,count:115,highlight:"Alternator & Battery Testing",category:"Auto electrical",distance:3.8},
-{name:"Arjun Automotive Care",locality:"Near Borgwarner, Kakkalur Ind.",rating:4.9,count:164,highlight:"Precision Engine & Gearbox Service",category:"Automotive workshop",distance:5.6}
-].map((w,i)=>({...w,id:"qb-demo-"+(i+1),address:w.locality+", Tiruvallur, Tamil Nadu",source:"Uploaded prototype sample",brand:"Not specified",services:[w.highlight],latitude:null,longitude:null,distanceSource:"Prototype estimate from Tiruvallur hub"}));
-const defaultCenter=[22.5,79],endpoints=['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter'];
+{name:"CSK Multi Car Care Center",address:"NH 716, Thirupachur, Tiruvallur district, Tamil Nadu 631203",phone:"+91 97876 49943",rating:5,count:25,category:"Multi-brand car repair",services:["Multi-brand car repair","General servicing","Mechanical diagnostics","Ford repair support"],distance:7.5,source:"Public business listing"},
+{name:"Sri Praveen Kumar Auto Mobiles",address:"No. 31, TNHB, beside City Super Market, Kakkalur, Tiruvallur, Tamil Nadu 602001",phone:"+91 73396 13597",rating:4.9,count:228,category:"Two-wheeler repair",services:["Motorcycle servicing","Two-wheeler repairs","Routine maintenance","Mechanical troubleshooting"],distance:3,source:"Public business listing"},
+{name:"ISHA MOTORS",address:"1/9, Kudiyanavar Street 88, Veppampattu, Tiruvallur district, Tamil Nadu 602024",phone:"+91 90872 73005",rating:5,count:229,category:"Vehicle repair workshop",services:["Vehicle servicing","General mechanical repairs","Inspection and diagnostics"],distance:8,source:"Public business listing"},
+{name:"Splash Automotive",address:"Plot No. 26, Poonamallee High Road, Kandaswamy Nagar, Venkathur, Tiruvallur, Tamil Nadu 602002",phone:"+91 93615 15105",rating:4.7,count:308,category:"Multi-brand car care",services:["Car servicing and repairs","Oil change","Car wash and detailing","Auto accessories","Bodywork and painting","Battery services"],distance:2.5,source:"Public business listing"},
+{name:"Vaakai Motors Multi Brand Car Service",address:"312/9B, Poonthamalli–Thiruniravur Road, Kottambedu Village, Thirunindravur, Tiruvallur district, Tamil Nadu 602024",phone:"+91 96555 58554",rating:4.9,count:17,category:"Multi-brand car repair",services:["Multi-brand car servicing","General car repairs","Mechanical diagnostics"],distance:17,source:"Public business listing"},
+{name:"Shubham Honda",address:"17/5, Bypass Road, Periyakuppam, Tiruvallur, Tamil Nadu 602001",phone:"+91 80718 78397",rating:4.4,count:1819,category:"Honda two-wheeler service",services:["Honda motorcycle servicing","Scooter servicing","Periodic maintenance","Two-wheeler repairs"],distance:2,source:"Public business listing"},
+{name:"PK Auto Cool",address:"Poonamallee High Road, Manavalanagar, Venkathur, Tiruvallur, Tamil Nadu 602002",phone:"+91 80567 00288",rating:4.9,count:11,category:"Car air-conditioning service",services:["Car AC inspection","Air-conditioning repair","AC maintenance","General vehicle service"],distance:2.5,source:"Public business listing"},
+{name:"Om Murugan Car Service",address:"42, Anna Street, Tiruvallur, Tamil Nadu 602001",phone:"+91 88258 84972",rating:5,count:16,category:"Car repair and service",services:["Car servicing","General car repairs","Water wash"],distance:1.5,source:"Public business listing"},
+{name:"Royal Enfield Service Center – Gap Motors",address:"No. 147, Kausthubham, PH Road, Ondikuppam, Manavalanagar, Tiruvallur, Tamil Nadu 602002",phone:"+91 88794 87321",rating:4.8,count:580,category:"Royal Enfield two-wheeler service",services:["Royal Enfield periodic servicing","Motorcycle maintenance","Two-wheeler repairs"],distance:2.2,source:"Public business listing"},
+{name:"Harsha Toyota",address:"No. 5/6, C.V. Naidu Salai, near Reliance Fuel Station, Tiruvallur, Tamil Nadu 602001",phone:"+91 44 3999 7999",rating:4.8,count:571,category:"Toyota authorised service touchpoint",services:["Toyota vehicle servicing","Periodic maintenance","After-sales support","Car wash"],distance:1.3,source:"Public business listing"}
+].map((w,i)=>({...w,id:"qb-public-"+(i+1),locality:w.address.split(",")[1]||"Tiruvallur",brand:"Not specified",latitude:null,longitude:null,distanceSource:"Approx. "+w.distance+" km from Tiruvallur town centre · not live routing",highlight:w.services.join(" · "),sourceAttribution:"Public business listing · not QuickBay verified"}));
+const defaultCenter=[13.1432,79.9079],endpoints=['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter'];
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const km=(a,b,c,d)=>{const r=6371,p=x=>x*Math.PI/180,dl=p(c-a),dn=p(d-b),v=Math.sin(dl/2)**2+Math.cos(p(a))*Math.cos(p(c))*Math.sin(dn/2)**2;return 2*r*Math.asin(Math.sqrt(v))};
  const setStatus=s=>{const el=document.getElementById('qbLocationStatus');if(el)el.textContent=s};
@@ -96,10 +86,10 @@ const defaultCenter=[22.5,79],endpoints=['https://overpass-api.de/api/interprete
   try{const searchQuery=/tamil nadu/i.test(query)?query+', India':query+', Tamil Nadu, India';const url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(searchQuery);const res=await fetch(url,{headers:{Accept:'application/json'}});if(!res.ok)throw Error('Area search returned '+res.status);const hits=await res.json();if(!hits.length)throw Error('No matching area found. Try a nearby city or PIN code.');location={lat:Number(hits[0].lat),lon:Number(hits[0].lon)};setStatus('Showing services near '+(hits[0].display_name||query).split(',').slice(0,3).join(',')+' · 25 km radius');loadWorkshopDirectory()}catch(e){setStatus(e.message||'Could not find that area. Try again.');toast(e.message||'Area search failed')}
  };
  window.qbRequestLocation=function(){
-  if(!navigator.geolocation){setStatus('This browser does not support location access.');return}
+  if(!navigator.geolocation){location={lat:13.1432,lon:79.9079};setStatus('Live location is unavailable. Showing Tiruvallur listings instead.');loadWorkshopDirectory();return}
   setStatus('Requesting location permission…');
   navigator.geolocation.getCurrentPosition(p=>{location={lat:p.coords.latitude,lon:p.coords.longitude};setStatus('Location enabled · accuracy about '+Math.max(1,Math.round(p.coords.accuracy))+' m');loadWorkshopDirectory()},
-   e=>{const msg=e.code===1?'Location permission denied. Enable location for this website in browser settings.':e.code===2?'Location unavailable. Check device location settings.':'Location request timed out. Try again.';setStatus(msg);toast(msg)},
+   e=>{const msg=e.code===1?'Location permission denied. Showing Tiruvallur pilot listings instead.':e.code===2?'Location unavailable. Showing Tiruvallur pilot listings instead.':'Location request timed out. Showing Tiruvallur pilot listings instead.';location={lat:13.1432,lon:79.9079};setStatus(msg);loadWorkshopDirectory();toast(msg)},
    {enableHighAccuracy:true,timeout:15000,maximumAge:60000});
  };
  function normalise(el){
@@ -143,12 +133,12 @@ const defaultCenter=[22.5,79],endpoints=['https://overpass-api.de/api/interprete
  window.qbFocusWorkshop=function(id){const x=markers.find(m=>String(m.id)===String(id));if(x&&map){map.setView(x.marker.getLatLng(),16);x.marker.openPopup()}};
  window.loadWorkshopDirectory=async function(){
   const target=document.getElementById('results');if(!target)return;
-  if(!location){target.innerHTML=empty('⌖','Turn on location to find nearby services','QuickBay needs permission to use your device location. Tap “Use my location” to see workshops within 25 km.');initMap([]);return}
+  if(!location){location={lat:13.1432,lon:79.9079};setStatus('Showing the Tiruvallur pilot area. Use live location to switch to your current position.');}
   target.innerHTML='<div class="card">Finding nearby workshops and service centres…</div>';setStatus('Searching within 25 km of your location…');
   try{
    const settled=await Promise.allSettled([osm(),quickbay()]);const publicRows=settled[0].status==='fulfilled'?settled[0].value:[];const quickbayRows=settled[1].status==='fulfilled'?settled[1].value:[];const nearTiruvallur=km(location.lat,location.lon,13.1432,79.9079)<=25;const prototypeRows=nearTiruvallur?DEMO_TIRUVALLUR:[];const unique=new Map();[...prototypeRows,...publicRows,...quickbayRows].forEach(w=>{const k=(w.name+'|'+(w.address||'')).toLowerCase();if(!unique.has(k)||w.source==='QuickBay directory')unique.set(k,w)});
-   rows=Array.from(unique.values()).filter(w=>w.source==='Uploaded prototype sample'?nearTiruvallur:w.distance<=25);
-   const term=(document.getElementById('q')?.value||'').trim().toLowerCase();if(term)rows=rows.filter(w=>(w.name+' '+(w.address||'')+' '+(w.category||'')).toLowerCase().includes(term));
+   rows=Array.from(unique.values()).filter(w=>w.source==='Public business listing'?nearTiruvallur:w.distance<=25);
+   const term=(document.getElementById('q')?.value||'').trim().toLowerCase();if(term)rows=rows.filter(w=>(w.name+' '+(w.address||'')+' '+(w.category||'')+' '+(w.services||[]).join(' ')).toLowerCase().includes(term));
    const service=document.getElementById('serviceFilter')?.value;if(service==='tyres')rows=rows.filter(w=>/tyre|tire/i.test(w.category+' '+(w.services||[]).join(' ')));if(service==='motorcycle')rows=rows.filter(w=>/motorcycle|two.wheeler/i.test(w.category+' '+(w.services||[]).join(' ')));
    rows.sort((a,b)=>document.getElementById('sortFilter')?.value==='name'?a.name.localeCompare(b.name):a.distance-b.distance);initMap(rows);setStatus('Search area ready · '+rows.length+' results within 25 km'+(settled[0].status==='rejected'?' · public map directory temporarily unavailable':''));
    if(!rows.length){target.innerHTML=empty('⌖','No nearby listings found','No public directory listings were found here. The uploaded prototype sample list is available around Tiruvallur. Try Tiruvallur or a nearby locality.');return}
