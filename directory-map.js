@@ -51,7 +51,7 @@ function qbOpenWorkshopDetails(id){
  const hours=w.operating_hours&&typeof w.operating_hours==='object'?Object.entries(w.operating_hours).map(([day,value])=>'<div class="row"><span>'+qbSafe(day)+'</span><span>'+qbSafe(typeof value==='string'?value:JSON.stringify(value))+'</span></div>').join(''):'Not provided';
  const rating=w.rating==null?'Not provided':'★ '+qbSafe(w.rating)+(w.review_count!=null?' · '+qbSafe(w.review_count)+' reviews':'');
  const phone=w.phone?'<a href="tel:'+qbSafe(w.phone)+'">'+qbSafe(w.phone)+'</a>':'Not provided';
- const websiteUrl=typeof w.website==='string'&&/^https?:\\/\\//i.test(w.website)?qbSafe(w.website):'';
+ const websiteUrl=typeof w.website==='string'&&(w.website.startsWith('https://')||w.website.startsWith('http://'))?qbSafe(w.website):'';
  const website=websiteUrl?'<a href="'+websiteUrl+'" target="_blank" rel="noopener">Visit website ↗</a>':'Not provided';
  const verified=w.is_quickbay_verified&&w.partner_status==='approved';
  modal(qbSafe(w.name),'Workshop information · '+(verified?'QuickBay verified':w.partner_status==='approved'?'Registered partner':'Not QuickBay verified'),
