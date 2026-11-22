@@ -3,45 +3,46 @@
 
 QuickBay is an India-focused automotive workshop marketplace and workshop operations platform.
 
-## Project status
-- Production UI: https://quickbay.vercel.app
+## Live links
+- Production: https://quickbay.vercel.app
+- Preview reference shared by the project owner: https://quickbay-r4a71cqzp-yoyo-0909.vercel.app/?utm_source=chatgpt.com
 - Active development branch: `work/quickbay-completion`
-- Supabase project: connected and healthy in the Mumbai region.
-- The current development branch is a preview only. It has not been merged into the production branch or assigned to the production domain.
-- No workshop directory records have been imported or published. The directory must display only source-permitted or approved records.
+- Release review: [Pull request #3](https://github.com/yoyo-0909/Quickbay/pull/3)
 
-## Authentication
-- Email + password sign-in.
-- Registration collects full name and mobile number.
-- Mobile number is saved as contact information in `profiles.phone`.
-- No mobile OTP, SMS verification, or phone-based login.
-- Email changes are not exposed in the profile editor because they require a separate confirmation flow.
+The preview reference above is a previously created Vercel preview. It is not a claim that the latest development commit has been deployed there.
 
 ## Application modules
-- Customer: profile, garage, vehicle updates, workshop discovery, booking requests, cancellation of eligible bookings, service tracking, service history, saved workshops, estimate approvals, invoice summaries, private support tickets, private feedback and in-app inbox.
-- Workshop: member-scoped bookings, bays, job cards, stage transitions, technicians, service catalogue, draft estimates, invoice register, inventory ledger, parts-return records and private customer feedback.
-- Admin: platform overview, customer/profile list, booking list, workshop applications, partner directory, service category management, vehicle catalogue management, private review moderation, support tickets, analytics and audit log views.
+- **Customer:** profile, garage, vehicle updates, workshop discovery, verified-partner booking requests, booking cancellation/rescheduling, service tracking, service history, saved workshops, estimate responses, invoice summaries, private support tickets, private feedback and in-app inbox.
+- **Workshop:** member-scoped bookings, bays, job cards, stage transitions, technicians, service catalogue, draft estimates, invoice register, inventory ledger, parts-return records and private customer feedback.
+- **Admin:** platform overview, customer/profile list, booking list, workshop applications, partner directory, service category management, vehicle catalogue management, private review moderation, support tickets, analytics and audit log views.
 
-## Backend
-The Supabase project contains the core profiles, workshops, workshop membership, vehicles, services, bookings, bays, technicians, job cards, estimates, invoices, parts-return and audit tables. Migrations `0001`–`0005` established the core schema and security helpers. Migrations `0006`–`0016` add inventory, in-app notification storage, booking cancellation/rescheduling, estimate approvals, estimate-item access, a private-schema inventory movement implementation, safer extension placement, RLS/index optimisations, private support, saved workshops, non-public feedback moderation and admin-managed catalogues.
+## Authentication and security
+- Email/password sign-in.
+- Registration collects full name and mobile number; the number is contact information only.
+- No phone OTP, SMS verification, or phone-based login.
+- Public signup cannot choose a privileged role. Workshop/admin access requires controlled provisioning and active workshop membership.
+- Row Level Security scopes customer and workshop records.
+- Never put a Supabase service-role key or secret in browser code or this repository.
 
-See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for environment and migration notes.
+## Backend and migrations
+The project uses Supabase for authentication and PostgreSQL data. Migrations `0001`–`0016` establish the core schema and additive workflows. Migration `0017_verified_partner_booking_requests.sql` adds server-side checks for customer booking requests and is pending application before the updated booking flow is enabled against the live database.
 
-## Workshop data and licensing
-The directory target is 30,000+ genuine records, but this is a sourcing goal—not a current count. Do not invent workshops, phone numbers, ratings, locations or partner verification. Only import data after a written license confirms storage, public display, commercial use and attribution rights. See [DATA_SOURCING.md](DATA_SOURCING.md).
+See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for current backend status and migration instructions.
 
-## Intentionally disabled during this development phase
-- Payment gateway activation and financial transactions.
+## Workshop discovery and booking rules
+QuickBay can show source-attributed public automotive listings and location-based discovery. A third-party map listing is not a QuickBay partner. Customers may use published contact details and directions, but in-app booking requests are restricted to approved, QuickBay-verified partners and their active service catalogue. A request is not a confirmed appointment until the workshop accepts it.
+
+The directory target is 30,000+ genuine records; this is a sourcing goal, not a current count. Do not invent workshops, phone numbers, ratings, locations or partner verification. Import only data with documented rights for storage, public display, commercial use and attribution. See [DATA_SOURCING.md](DATA_SOURCING.md).
+
+## Intentionally disabled
+- Payment gateway activation and payment collection.
 - Paid third-party services or subscriptions.
-- Outbound SMS, email, push or customer notifications.
-- Publishing or importing real customer/workshop records.
-- Destructive database changes or deleting existing data.
-- Merging development branches or changing production deployments.
+- Outbound SMS, email and push notifications.
+- Publishing/importing customer or workshop records without permission.
+- Destructive database changes.
 
-The in-app notification table is storage only; no outbound notification provider or automatic customer messaging is configured.
-
-## Validation status
-- JavaScript syntax checks pass for the inline application scripts and `workflows.js`.
-- Vercel preview builds have reached `READY`.
-- Database migration objects and inventory RPC have been verified.
-- Full interactive browser QA and authenticated end-to-end testing remain outstanding because no dedicated test accounts were supplied.
+## Validation and release status
+- Existing Vercel preview builds reached `READY` before the latest booking changes.
+- Static JavaScript syntax checks were previously reported as passing for the inline application scripts and `workflows.js`.
+- Full interactive browser QA and authenticated end-to-end testing remain outstanding.
+- Apply migration 0017 and test customer/workshop accounts before promoting the release to production.
