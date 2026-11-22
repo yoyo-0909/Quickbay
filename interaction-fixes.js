@@ -30,10 +30,7 @@
   console.error('QuickBay async error:',event.reason);
   if(typeof window.toast==='function')window.toast('A request did not finish. Please retry.');
  });
- ['go','previewAsGuest','setAuthTab','submitAuth','loadWorkshopDirectory','qbOpenWorkshopDetails','qbFocusWorkshop','qbOpenPartnerApplication'].forEach(name=>{
-  if(typeof window[name]==='function')return;
-  try{window[name]=eval(name)}catch(_){}
- });
+ window.go=go;window.previewAsGuest=previewAsGuest;window.setAuthTab=setAuthTab;window.submitAuth=submitAuth;window.loadWorkshopDirectory=loadWorkshopDirectory;window.qbOpenWorkshopDetails=qbOpenWorkshopDetails;window.qbFocusWorkshop=qbFocusWorkshop;window.qbOpenPartnerApplication=qbOpenPartnerApplication;
  setTimeout(function(){
   const splash=document.getElementById('splash');
   if(splash&&!splash.classList.contains('hide'))splash.classList.add('hide');
