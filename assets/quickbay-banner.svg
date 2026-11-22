@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="520" viewBox="0 0 1600 520" role="img" aria-labelledby="title desc">
+<title id="title">QuickBay — Every Bay. Every Job. One Platform.</title>
+<desc id="desc">A dark automotive-inspired QuickBay banner with a geometric Q mark and a precise workshop-grid motif.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#080B10"/><stop offset=".58" stop-color="#111923"/><stop offset="1" stop-color="#17242B"/></linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D8F36A"/><stop offset="1" stop-color="#91C94B"/></linearGradient>
+  <pattern id="grid" width="46" height="46" patternUnits="userSpaceOnUse"><path d="M46 0H0V46" fill="none" stroke="#B8C5CB" stroke-opacity=".075" stroke-width="1"/></pattern>
+  <radialGradient id="glow"><stop offset="0" stop-color="#B8E65C" stop-opacity=".16"/><stop offset="1" stop-color="#B8E65C" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1600" height="520" rx="28" fill="url(#bg)"/><rect width="1600" height="520" rx="28" fill="url(#grid)"/><circle cx="1280" cy="245" r="380" fill="url(#glow)"/>
+<g transform="translate(118 116)"><path d="M54 0C24 0 0 24 0 54v64c0 30 24 54 54 54h64c30 0 54-24 54-54V54c0-30-24-54-54-54H54Zm0 31h64c13 0 23 10 23 23v64c0 13-10 23-23 23H54c-13 0-23-10-23-23V54c0-13 10-23 23-23Z" fill="url(#accent)"/><path d="m96 96 54 54" stroke="url(#accent)" stroke-width="19" stroke-linecap="round"/></g>
+<text x="350" y="190" fill="#F7FAFC" font-family="Arial,Helvetica,sans-serif" font-size="76" font-weight="800" letter-spacing="-3">QuickBay</text>
+<text x="354" y="252" fill="#D8F36A" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="700" letter-spacing="5">EVERY BAY. EVERY JOB. ONE PLATFORM.</text>
+<text x="354" y="316" fill="#D3DCE0" font-family="Arial,Helvetica,sans-serif" font-size="25">The connected workspace for automotive service.</text>
+<text x="354" y="355" fill="#9AAAB2" font-family="Arial,Helvetica,sans-serif" font-size="18">Workshop operations  /  Vehicle owners  /  Service discovery</text>
+<g transform="translate(1120 120)" opacity=".95"><rect width="340" height="260" rx="22" fill="#0B1117" stroke="#5B6B72" stroke-opacity=".6"/><rect x="22" y="22" width="296" height="36" rx="8" fill="#17232B"/><circle cx="42" cy="40" r="5" fill="#D8F36A"/><rect x="58" y="36" width="88" height="8" rx="4" fill="#8FA0A8"/><rect x="22" y="80" width="88" height="72" rx="10" fill="#1C2B32"/><rect x="126" y="80" width="88" height="72" rx="10" fill="#1C2B32"/><rect x="230" y="80" width="88" height="72" rx="10" fill="#1C2B32"/><g fill="#D8F36A"><rect x="36" y="95" width="32" height="5" rx="2.5"/><rect x="140" y="95" width="32" height="5" rx="2.5"/><rect x="244" y="95" width="32" height="5" rx="2.5"/></g><g fill="#F7FAFC"><rect x="36" y="116" width="52" height="17" rx="4"/><rect x="140" y="116" width="52" height="17" rx="4"/><rect x="244" y="116" width="52" height="17" rx="4"/></g><rect x="22" y="172" width="296" height="66" rx="10" fill="#17232B"/><path d="M42 204h44m-44 12h105m-105 12h74" stroke="#82939A" stroke-width="5" stroke-linecap="round"/><path d="M240 208l13 13 25-29" fill="none" stroke="#D8F36A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></g>
+<path d="M118 430H1482" stroke="#B7C4CA" stroke-opacity=".18"/><text x="118" y="470" fill="#81919A" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3">AUTOMOTIVE SERVICE OPERATIONS PLATFORM</text><text x="1482" y="470" text-anchor="end" fill="#81919A" font-family="Arial,Helvetica,sans-serif" font-size="14">TAMIL NADU  ·  INDIA</text>
+</svg>
