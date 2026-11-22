@@ -53,7 +53,7 @@
    '<label class="full">Current odometer (km)<input class="field" name="odo" type="number" min="0" placeholder="e.g. 24000"></label></div>'+
    '<div class="notice" style="margin-top:14px">Manufacturing year means the year your vehicle was made. Model list covers many current India-market cars; discontinued and limited editions may be missing.</div><button class="btn" style="margin-top:14px">Save vehicle</button></form>');
  };
- let location=null,rows=[],map=null,markers=[],locationAttempted=false;
+ let location={lat:13.1432,lon:79.9079},locationSource='default',rows=[],map=null,markers=[],locationAttempted=false;
  const DEMO_TIRUVALLUR = [
 {name:"CSK Multi Car Care Center",address:"NH 716, Thirupachur, Tiruvallur district, Tamil Nadu 631203",phone:"+91 97876 49943",rating:5,count:25,category:"Multi-brand car repair",services:["Multi-brand car repair","General servicing","Mechanical diagnostics","Ford repair support"],distance:7.5,source:"Public business listing"},
 {name:"Sri Praveen Kumar Auto Mobiles",address:"No. 31, TNHB, beside City Super Market, Kakkalur, Tiruvallur, Tamil Nadu 602001",phone:"+91 73396 13597",rating:4.9,count:228,category:"Two-wheeler repair",services:["Motorcycle servicing","Two-wheeler repairs","Routine maintenance","Mechanical troubleshooting"],distance:3,source:"Public business listing"},
@@ -83,13 +83,13 @@ const defaultCenter=[13.1432,79.9079],endpoints=['https://overpass-api.de/api/in
  window.qbSearchArea=async function(){
   const field=document.getElementById('qbAreaInput'),query=(field?.value||'').trim();if(!query){setStatus('Enter a city, locality or PIN code to search.');return}
   setStatus('Finding '+query+'…');
-  try{const searchQuery=/tamil nadu/i.test(query)?query+', India':query+', Tamil Nadu, India';const url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(searchQuery);const res=await fetch(url,{headers:{Accept:'application/json'}});if(!res.ok)throw Error('Area search returned '+res.status);const hits=await res.json();if(!hits.length)throw Error('No matching area found. Try a nearby city or PIN code.');location={lat:Number(hits[0].lat),lon:Number(hits[0].lon)};setStatus('Showing services near '+(hits[0].display_name||query).split(',').slice(0,3).join(',')+' · 25 km radius');loadWorkshopDirectory()}catch(e){setStatus(e.message||'Could not find that area. Try again.');toast(e.message||'Area search failed')}
+  try{const searchQuery=/tamil nadu/i.test(query)?query+', India':query+', Tamil Nadu, India';const url='https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q='+encodeURIComponent(searchQuery);const res=await fetch(url,{headers:{Accept:'application/json'}});if(!res.ok)throw Error('Area search returned '+res.status);const hits=await res.json();if(!hits.length)throw Error('No matching area found. Try a nearby city or PIN code.');location={lat:Number(hits[0].lat),lon:Number(hits[0].lon)};locationSource='search';setStatus('Showing services near '+(hits[0].display_name||query).split(',').slice(0,3).join(',')+' · 25 km radius');loadWorkshopDirectory()}catch(e){setStatus(e.message||'Could not find that area. Try again.');toast(e.message||'Area search failed')}
  };
  window.qbRequestLocation=function(){
   if(!navigator.geolocation){location={lat:13.1432,lon:79.9079};setStatus('Live location is unavailable. Showing Tiruvallur listings instead.');loadWorkshopDirectory();return}
   setStatus('Requesting location permission…');
-  navigator.geolocation.getCurrentPosition(p=>{location={lat:p.coords.latitude,lon:p.coords.longitude};setStatus('Location enabled · accuracy about '+Math.max(1,Math.round(p.coords.accuracy))+' m');loadWorkshopDirectory()},
-   e=>{const msg=e.code===1?'Location permission denied. Showing Tiruvallur pilot listings instead.':e.code===2?'Location unavailable. Showing Tiruvallur pilot listings instead.':'Location request timed out. Showing Tiruvallur pilot listings instead.';location={lat:13.1432,lon:79.9079};setStatus(msg);loadWorkshopDirectory();toast(msg)},
+  navigator.geolocation.getCurrentPosition(p=>{location={lat:p.coords.latitude,lon:p.coords.longitude};locationSource='gps';setStatus('Location enabled · accuracy about '+Math.max(1,Math.round(p.coords.accuracy))+' m');loadWorkshopDirectory()},
+   e=>{const msg=e.code===1?'Location permission denied. Showing Tiruvallur pilot listings instead.':e.code===2?'Location unavailable. Showing Tiruvallur pilot listings instead.':'Location request timed out. Showing Tiruvallur pilot listings instead.';location={lat:13.1432,lon:79.9079};locationSource='default';setStatus(msg);loadWorkshopDirectory();toast(msg)},
    {enableHighAccuracy:true,timeout:15000,maximumAge:60000});
  };
  function normalise(el){
@@ -148,5 +148,5 @@ const defaultCenter=[13.1432,79.9079],endpoints=['https://overpass-api.de/api/in
  window.bookingsPage=function(){return head('BOOKINGS','My service bookings','Your service requests and appointment updates will appear here.')+
   (bookings.length?'<div class="tablewrap"><table><thead><tr><th>BOOKING ID</th><th>VEHICLE</th><th>SERVICE</th><th>PREFERRED DATE</th><th>STATUS</th></tr></thead><tbody>'+bookings.map(b=>'<tr><td><strong>'+esc(b.id)+'</strong></td><td>'+esc((vehicles.find(v=>v.id===b.vehicle)||{}).reg||'Vehicle')+'</td><td>'+esc(b.service)+'</td><td>'+esc(b.date||'Not selected')+'</td><td><span class="status warn">'+esc(b.status)+'</span></td></tr>').join('')+'</tbody></table></div>':empty('▤','No service bookings yet','You haven’t booked a service yet. Your bookings and their status will appear here after you request a service.','<button class="btn" onclick="go(\'Explore Workshops\')">Find a nearby workshop</button>'))};
  const previousRender=window.render;
- if(typeof previousRender==='function')window.render=function(){previousRender();if(mode==='customer'&&page==='Explore Workshops'){setStatus(location?'Location enabled · ready to search':'Requesting your location permission…');if(!location&&!locationAttempted){locationAttempted=true;setTimeout(()=>window.qbRequestLocation(),350)}}};
+ if(typeof previousRender==='function')window.render=function(){previousRender();if(mode==='customer'&&page==='Explore Workshops'){setStatus(locationSource==='gps'?'Live location enabled · ready to search':locationSource==='search'?'Selected search area · ready to search':'Showing Tiruvallur pilot area · tap Get your live location to switch to GPS');if(!location&&!locationAttempted){locationAttempted=true;setTimeout(()=>window.qbRequestLocation(),350)}}};
 })();
