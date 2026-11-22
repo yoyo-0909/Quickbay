@@ -64,3 +64,6 @@ vehicleForm=async function(){
  '<label>Transmission<select name="trans"><option>Manual</option><option>Automatic</option></select></label>'+
  field('Current odometer (km)','odo','e.g. 24000','number')+'</div><button class="btn">Save vehicle</button></form>');
 };
+
+// If the stored session resolved before the extension scripts finished loading, hydrate it once more through the full workflow chain.
+if(authUser&&supabaseClient)Promise.resolve().then(()=>completeAuth(authUser));
