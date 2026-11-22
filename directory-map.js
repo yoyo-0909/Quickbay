@@ -24,16 +24,17 @@ function qbDirectoryMapFallback(message){
 }
 function qbInitDirectoryMap(rows){
  const el=document.getElementById('workshopMap');if(!el)return;
- const geocoded=(rows||[]).filter(w=>Number.isFinite(Number(w.latitude))&&Number.isFinite(Number(w.longitude)));
+ const geocoded=(rows||[]).filter(w=>w.latitude!=null&&w.longitude!=null&&Number.isFinite(Number(w.latitude))&&Number.isFinite(Number(w.longitude))&&Number(w.latitude)>=-90&&Number(w.latitude)<=90&&Number(w.longitude)>=-180&&Number(w.longitude)<=180);
  const counter=document.getElementById('mapCount');if(counter)counter.textContent=geocoded.length+' locations';
  if(!window.L||typeof window.L.map!=='function'){qbDirectoryMapFallback('Map library did not load. Open the map separately or use the workshop list.');return}
  if(window.qbDirectoryMap){try{window.qbDirectoryMap.remove()}catch(_){}window.qbDirectoryMap=null}
  el.innerHTML='';
  const map=window.L.map(el,{scrollWheelZoom:false,preferCanvas:true}).setView([13.1231,79.9120],12);
  window.qbDirectoryMap=map;window.qbDirectoryMarkers=[];
- window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+ const tileLayer=window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
   maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
  }).addTo(map);
+ let tileErrors=0;tileLayer.on('tileerror',()=>{tileErrors++;if(tileErrors>=3){qbDirectoryMapFallback('Map tiles could not be reached from this browser. The workshop list remains available.')}});
  geocoded.forEach(w=>{
   const marker=window.L.marker([Number(w.latitude),Number(w.longitude)]).addTo(map);
   marker.bindPopup('<b>'+qbSafe(w.name)+'</b><br>'+qbSafe([w.locality,w.city,w.district].filter(Boolean).join(', '))+'<br><button type="button" class="qb-map-detail" onclick="qbOpenWorkshopDetails(\''+qbSafe(w.id)+'\')">View details</button>');
@@ -50,7 +51,8 @@ function qbOpenWorkshopDetails(id){
  const hours=w.operating_hours&&typeof w.operating_hours==='object'?Object.entries(w.operating_hours).map(([day,value])=>'<div class="row"><span>'+qbSafe(day)+'</span><span>'+qbSafe(typeof value==='string'?value:JSON.stringify(value))+'</span></div>').join(''):'Not provided';
  const rating=w.rating==null?'Not provided':'★ '+qbSafe(w.rating)+(w.review_count!=null?' · '+qbSafe(w.review_count)+' reviews':'');
  const phone=w.phone?'<a href="tel:'+qbSafe(w.phone)+'">'+qbSafe(w.phone)+'</a>':'Not provided';
- const website=w.website?'<a href="'+qbSafe(w.website)+'" target="_blank" rel="noopener">Visit website ↗</a>':'Not provided';
+ const websiteUrl=typeof w.website==='string'&&/^https?:\\/\\//i.test(w.website)?qbSafe(w.website):'';
+ const website=websiteUrl?'<a href="'+websiteUrl+'" target="_blank" rel="noopener">Visit website ↗</a>':'Not provided';
  const verified=w.is_quickbay_verified&&w.partner_status==='approved';
  modal(qbSafe(w.name),'Workshop information · '+(verified?'QuickBay verified':w.partner_status==='approved'?'Registered partner':'Not QuickBay verified'),
  '<div class="card"><div class="row"><b>Directory status</b><span class="status '+(verified?'good':'warn')+'">'+(verified?'QuickBay verified':w.partner_status==='approved'?'Registered partner':'Third-party listing · not verified')+'</span></div>'+
@@ -76,7 +78,7 @@ loadWorkshopDirectory = async function(){
  if(search)query=query.or('name.ilike.%'+search+'%,locality.ilike.%'+search+'%,city.ilike.%'+search+'%,district.ilike.%'+search+'%,state.ilike.%'+search+'%,pincode.ilike.%'+search+'%,address.ilike.%'+search+'%');
  if(document.getElementById('serviceFilter')?.value)query=query.eq('category',document.getElementById('serviceFilter').value);
  if(document.getElementById('ratingFilter')?.value)query=query.gte('rating',Number(document.getElementById('ratingFilter').value));
- const {data,error}=await query.order('name').limit(200);
+ let data,error;try{({data,error}=await query.order('name').limit(200))}catch(requestError){error=requestError}
  if(error){
   target.innerHTML=empty('⚠','Could not load workshop listings',qbSafe(error.message)+' Check directory permissions and database connectivity.');
   const notice=document.getElementById('directoryNotice');if(notice)notice.innerHTML='<strong>Directory connection issue.</strong> '+qbSafe(error.message);
