@@ -50,7 +50,8 @@ create table public.workshops (
  unique(listing_source, source_record_id)
 );
 create index workshops_geo_idx on public.workshops(state, city, pincode);
-create index workshops_search_idx on public.workshops using gin (to_tsvector('simple', coalesce(name,'') || ' ' || coalesce(address,'') || ' ' || coalesce(city,'') || ' ' || coalesce(array_to_string(services,' '),'')));
+create index workshops_services_idx on public.workshops using gin (services);
+create index workshops_search_idx on public.workshops using gin (to_tsvector('simple'::regconfig, coalesce(name,'') || ' ' || coalesce(address,'') || ' ' || coalesce(city,'')));
 create table public.workshop_members (
  workshop_id uuid references public.workshops(id) on delete cascade,
  user_id uuid references public.profiles(id) on delete cascade,
