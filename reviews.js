@@ -25,8 +25,6 @@ completeAuth=async function(user){
  await qbCompleteAuthReviewBase(user);
  if(!authUser||!supabaseClient)return;
  await qbLoadCustomerReviews();
- if(['workshop_owner','workshop_manager','service_advisor','technician'].includes(authRole))await qbLoadWorkshopContext();
- if(['super_admin','platform_admin'].includes(authRole))await qbLoadAdminData();
  render();
 };
 menus.workshop.push(['Customer Feedback','★']);
