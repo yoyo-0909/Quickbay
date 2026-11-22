@@ -48,7 +48,7 @@ def request_overpass(query):
     for attempt in range(5):
         endpoint=ENDPOINTS[attempt % len(ENDPOINTS)]
         req=urllib.request.Request(endpoint,data=body,headers={
-            'User-Agent':'QuickBay-OpenDataImporter/1.0 (ODbL attribution; contact: data-admin@quickbay.in)',
+            'User-Agent':'QuickBay-OpenDataImporter/1.0 (ODbL attribution)',
             'Content-Type':'application/x-www-form-urlencoded'
         })
         try:
