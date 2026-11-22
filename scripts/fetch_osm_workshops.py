@@ -13,8 +13,8 @@ ENDPOINTS = [
     "https://overpass.kumi.systems/api/interpreter",
 ]
 # Approximate India mainland bounds plus island territories; tiling avoids one country-scale query.
-BBOXES = [(6.0, 68.0, 37.2, 97.5), (6.5, 92.0, 14.0, 97.5)]
-TILE = 1.5
+BBOXES = [(6.0, 68.0, 37.2, 98.5)]
+TILE = 2.0
 TAGS = [
     ('shop', 'car_repair'), ('craft', 'car_repair'), ('craft', 'car_mechanic'),
     ('craft', 'car_painter'), ('shop', 'tyres'), ('amenity', 'car_wash')
@@ -38,8 +38,8 @@ def tiles():
 
 def query_for(box):
     s,w,n,e=box
-    clauses=''.join(f'nwr["{k}"="{v}"]({s},{w},{n},{e});' for k,v in TAGS)
-    return f'[out:json][timeout:75];({clauses});out center tags;'
+    clauses=''.join(f'nwr["{k}"="{v}"](area.india)({s},{w},{n},{e});' for k,v in TAGS)
+    return f'[out:json][timeout:75];area["ISO3166-1"="IN"][admin_level=2]->.india;({clauses});out center tags;'
 
 def request_overpass(query):
     body=urllib.parse.urlencode({'data':query}).encode()
