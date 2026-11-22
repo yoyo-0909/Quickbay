@@ -1,6 +1,6 @@
 
 /* QuickBay workflow extensions: stock ledger, estimates, parts handover and in-app inbox. */
-let qbInventoryItems=[],qbInventoryMovements=[],qbEstimates=[],qbInvoices=[],qbPartsReturns=[],qbCustomerNotifications=[],qbCustomerInvoices=[];
+let qbInventoryItems=[],qbInventoryMovements=[],qbEstimates=[],qbInvoices=[],qbPartsReturns=[],qbCustomerNotifications=[],qbCustomerInvoices=[],qbCustomerEstimates=[];
 const qbWorkshopLoadBase=qbLoadWorkshopContext;
 qbLoadWorkshopContext=async function(){
  await qbWorkshopLoadBase();
@@ -22,6 +22,12 @@ qbLoadWorkshopContext=async function(){
  if(!tasks[3].error)qbInvoices=tasks[3].data||[];
  if(!tasks[4].error)qbPartsReturns=tasks[4].data||[];
 };
+async function qbLoadCustomerEstimates(){
+ qbCustomerEstimates=[];if(!authUser||!supabaseClient)return;
+ const ids=qbCustomerJobs.map(j=>j.id);if(!ids.length)return;
+ const {data,error}=await supabaseClient.from('estimates').select('id,job_id,version,status,subtotal,tax_total,discount,total,customer_response_at,created_at,estimate_items(id,item_type,description,quantity,unit_price,tax_rate)').in('job_id',ids).order('created_at',{ascending:false});
+ if(error){console.warn('Customer estimates: '+error.message);return}qbCustomerEstimates=data||[];
+}
 async function qbLoadCustomerInvoices(){
  qbCustomerInvoices=[];if(!authUser||!supabaseClient)return;
  const {data,error}=await supabaseClient.from('invoices').select('id,invoice_number,job_id,workshop_id,subtotal,tax_total,discount,total,payment_status,gstin,issued_at').eq('customer_id',authUser.id).order('issued_at',{ascending:false});
@@ -40,10 +46,12 @@ completeAuth=async function(user){
  if(!authUser||!supabaseClient)return;
  await qbLoadCustomerNotifications();
  await qbLoadCustomerInvoices();
+ await qbLoadCustomerEstimates();
  render();
 };
 menus.workshop.splice(6,0,['Service Catalogue','⚙']);
-menus.customer.splice(6,0,['Invoices','₹']);
+menus.customer.splice(6,0,['Estimates','₹']);
+menus.customer.splice(7,0,['Invoices','₹']);
 const qbBookingsPageBase=bookingsPage;
 bookingsPage=function(){
  const rows=bookings.map(b=>'<tr><td><b>'+qbSafe(b.id)+'</b></td><td>'+qbSafe(b.service)+'</td><td>'+qbSafe(b.date||'Not set')+'</td><td><span class="status">'+qbSafe(b.status)+'</span></td><td>'+qbSafe(b.notes||'—')+'</td><td>'+(authUser&&['requested','rescheduled','confirmed'].includes(b.status)?'<button class="btn light" data-id="'+qbSafe(b.uuid)+'" onclick="rescheduleBookingForm(this.dataset.id)">Reschedule</button> <button class="btn light" data-id="'+qbSafe(b.uuid)+'" onclick="cancelBooking(this.dataset.id)">Cancel</button>':'—')+'</td></tr>').join('');
@@ -203,4 +211,17 @@ async function saveReschedule(e,id){
  e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const preferredAt=new Date(d.date+'T'+d.time+':00').toISOString();
  const {error}=await supabaseClient.from('bookings').update({status:'rescheduled',preferred_at:preferredAt,updated_at:new Date().toISOString()}).eq('id',id).eq('customer_id',authUser.id);
  if(error){toast(qbErr(error));return}closeModal();await loadMyBookings();render();toast('New preferred time saved. The workshop must confirm it.');
+}
+
+const qbWorkshopEstimatesPageBase=estimatesPage;
+estimatesPage=function(){
+ const open=qbWorkshopJobs.filter(j=>j.stage!=='delivered');
+ return head('SERVICE APPROVAL','Estimates','Prepare drafts and make them available in the customer account. No SMS, email or push message is sent.')+
+ '<div style="margin-bottom:16px"><button class="btn" onclick="estimateForm()">＋ Create draft estimate</button></div>'+
+ (qbEstimates.length?'<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">'+qbEstimates.map(e=>'<div class="card"><div class="row"><b>'+qbSafe(qbWorkshopJobs.find(j=>j.id===e.job_id)?.job_code||'Job card')+'</b><span class="status">'+qbSafe(e.status)+'</span></div><div class="statnum">'+qbMoney(e.total)+'</div><div class="muted">Version '+qbSafe(e.version)+' · '+qbDate(e.created_at)+'</div><div class="muted">'+(e.estimate_items||[]).map(x=>qbSafe(x.description)+' × '+qbSafe(x.quantity)).join('<br>')+'</div>'+(e.status==='draft'?'<button class="btn" style="margin-top:12px" data-id="'+qbSafe(e.id)+'" onclick="shareEstimate(this.dataset.id)">Make available to customer</button>':'')+'</div>').join('')+'</div>':empty('₹','No estimates','Draft estimates will appear here.'))+
+ (open.length?'':'<div class="notice" style="margin-top:14px">No open jobs are available for a new estimate.</div>');
+};
+async function shareEstimate(id){
+ const {error}=await supabaseClient.from('estimates').update({status:'sent'}).eq('id',id);
+ if(error){toast(qbErr(error));return}await qbRefreshWorkshop();toast('Estimate is now available in the customer account. No message was sent.');
 }
