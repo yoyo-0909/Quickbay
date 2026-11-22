@@ -105,7 +105,7 @@
   const tiles=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(mapRef);let tileErrors=0;
   tiles.on('tileerror',()=>{tileErrors++;if(tileErrors>=4&&map===mapRef){try{mapRef.remove()}catch(_){}map=null;fallback()}});
   if(location)L.circleMarker(center,{radius:9,color:'#2563eb',fillColor:'#60a5fa',fillOpacity:1}).addTo(mapRef).bindPopup('Search centre');
-  data.forEach(w=>{const lat=Number(w.latitude),lon=Number(w.longitude);if(!Number.isFinite(lat)||!Number.isFinite(lon))return;const m=L.marker([lat,lon]).addTo(mapRef);m.bindPopup('<b>'+esc(w.name)+'</b><br>'+esc(w.category)+'<br>'+Number(w.distance||0).toFixed(1)+' km away<br><button type="button" onclick="qbShowNearbyDetails(\\''+esc(w.id)+'\\')">View details</button>');markers.push({id:w.id,marker:m})});
+  data.forEach(w=>{const lat=Number(w.latitude),lon=Number(w.longitude);if(!Number.isFinite(lat)||!Number.isFinite(lon))return;const m=L.marker([lat,lon]).addTo(mapRef);m.bindPopup('<b>'+esc(w.name)+'</b><br>'+esc(w.category)+'<br>'+Number(w.distance||0).toFixed(1)+' km away<br><button type="button" onclick="qbShowNearbyDetails(\''+esc(w.id)+'\')">View details</button>');markers.push({id:w.id,marker:m})});
   if(markers.length){const group=L.featureGroup(markers.map(x=>x.marker));if(location)mapRef.fitBounds(group.getBounds().extend(center).pad(.18),{maxZoom:14});else if(markers.length>1)mapRef.fitBounds(group.getBounds().pad(.18),{maxZoom:14});else mapRef.setView(markers[0].marker.getLatLng(),14)}
   setTimeout(()=>{if(map===mapRef)mapRef.invalidateSize()},250);
  }
