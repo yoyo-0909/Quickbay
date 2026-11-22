@@ -1,6 +1,6 @@
 
 /* QuickBay workflow extensions: stock ledger, estimates, parts handover and in-app inbox. */
-let qbInventoryItems=[],qbInventoryMovements=[],qbEstimates=[],qbInvoices=[],qbPartsReturns=[],qbCustomerNotifications=[];
+let qbInventoryItems=[],qbInventoryMovements=[],qbEstimates=[],qbInvoices=[],qbPartsReturns=[],qbCustomerNotifications=[],qbCustomerInvoices=[];
 const qbWorkshopLoadBase=qbLoadWorkshopContext;
 qbLoadWorkshopContext=async function(){
  await qbWorkshopLoadBase();
@@ -22,6 +22,11 @@ qbLoadWorkshopContext=async function(){
  if(!tasks[3].error)qbInvoices=tasks[3].data||[];
  if(!tasks[4].error)qbPartsReturns=tasks[4].data||[];
 };
+async function qbLoadCustomerInvoices(){
+ qbCustomerInvoices=[];if(!authUser||!supabaseClient)return;
+ const {data,error}=await supabaseClient.from('invoices').select('id,invoice_number,job_id,workshop_id,subtotal,tax_total,discount,total,payment_status,gstin,issued_at').eq('customer_id',authUser.id).order('issued_at',{ascending:false});
+ if(error){console.warn('Customer invoices: '+error.message);return}qbCustomerInvoices=data||[];
+}
 async function qbLoadCustomerNotifications(){
  qbCustomerNotifications=[];
  if(!authUser||!supabaseClient)return;
@@ -34,9 +39,11 @@ completeAuth=async function(user){
  await qbCompleteAuthBase(user);
  if(!authUser||!supabaseClient)return;
  await qbLoadCustomerNotifications();
+ await qbLoadCustomerInvoices();
  render();
 };
 menus.workshop.splice(6,0,['Service Catalogue','⚙']);
+menus.customer.splice(6,0,['Invoices','₹']);
 const qbBookingsPageBase=bookingsPage;
 bookingsPage=function(){
  const rows=bookings.map(b=>'<tr><td><b>'+qbSafe(b.id)+'</b></td><td>'+qbSafe(b.service)+'</td><td>'+qbSafe(b.date||'Not set')+'</td><td><span class="status">'+qbSafe(b.status)+'</span></td><td>'+qbSafe(b.notes||'—')+'</td><td>'+(authUser&&['requested','rescheduled','confirmed'].includes(b.status)?'<button class="btn light" data-id="'+qbSafe(b.uuid)+'" onclick="rescheduleBookingForm(this.dataset.id)">Reschedule</button> <button class="btn light" data-id="'+qbSafe(b.uuid)+'" onclick="cancelBooking(this.dataset.id)">Cancel</button>':'—')+'</td></tr>').join('');
