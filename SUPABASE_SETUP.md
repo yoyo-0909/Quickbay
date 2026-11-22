@@ -9,7 +9,8 @@
 ## Database migrations
 The live database already contains the core schema from migrations `0001` through `0005`. The following additive migrations have also been applied:
 - `0006_inventory_notifications_and_customer_workflows.sql`: inventory items, immutable stock movement ledger, in-app notification storage, customer booking cancellation and estimate-item policies.
-- `0007_lock_inventory_ledger_permissions.sql`: restricts stock quantity changes to the authenticated `record_inventory_movement` RPC and limits notification updates to `read_at`.
+- `0007_lock_inventory_ledger_permissions.sql`: restricts stock quantity changes to the audited inventory RPC and limits notification updates to `read_at`.
+- `0008_private_inventory_rpc.sql`: moves the privileged stock movement implementation into the private schema; the public RPC is an invoker wrapper.
 
 Do not reapply the original core migrations to an already-provisioned database. Apply future migrations in order and verify them before connecting new UI workflows.
 
