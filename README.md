@@ -13,7 +13,7 @@ India-focused automotive workshop marketplace and workshop operations OS.
 - Partner application, bay and job-card demo workflows.
 
 ## Live deployment
-https://quickbay.vercel.app
+https://quickbay-r4a71cqzp-yoyo-0909.vercel.app/?utm_source=chatgpt.com
 
 ## Backend activation status
 Backend code is scaffolded, but the live Supabase project has not yet been connected or provisioned. The site therefore remains in demo preview until a Supabase project is connected, migrations are applied and `config.js` is configured. See [SUPABASE_SETUP.md](SUPABASE_SETUP.md).
