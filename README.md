@@ -1,43 +1,48 @@
 # QuickBay
 **Every Bay. Every Job. One Platform.**
 
-India-focused automotive workshop marketplace and workshop operations OS.
+QuickBay is an India-focused automotive workshop marketplace and workshop operations platform.
 
-## What's in this repository
-- Responsive customer, workshop and admin workspace UI.
-- Branded loading screen and a sign-in / customer registration screen.
-- Supabase Auth integration points in `config.js` (project URL + public anon key only).
-- PostgreSQL schema, row-level security and transactional workflow functions in `supabase/migrations`.
-- Customer garage, booking requests and permitted workshop-directory reads wired to Supabase when configured.
-- OpenStreetMap (ODbL) tiled automotive POI discovery collector and a licensed CSV import pipeline.
-- Partner application, bay and job-card demo workflows.
+## Live links
+- Production: https://quickbay.vercel.app
+- Preview reference shared by the project owner: https://quickbay-r4a71cqzp-yoyo-0909.vercel.app/?utm_source=chatgpt.com
+- Active development branch: `work/quickbay-completion`
+- Release review: [Pull request #3](https://github.com/yoyo-0909/Quickbay/pull/3)
 
-## Live deployment
-https://quickbay-r4a71cqzp-yoyo-0909.vercel.app/?utm_source=chatgpt.com
+The preview reference above is a previously created Vercel preview. It is not a claim that the latest development commit has been deployed there.
 
-## Backend activation status
-Backend code is scaffolded, but the live Supabase project has not yet been connected or provisioned. The site therefore remains in demo preview until a Supabase project is connected, migrations are applied and `config.js` is configured. See [SUPABASE_SETUP.md](SUPABASE_SETUP.md).
+## Application modules
+- **Customer:** profile, garage, vehicle updates, workshop discovery, verified-partner booking requests, booking cancellation/rescheduling, service tracking, service history, saved workshops, estimate responses, invoice summaries, private support tickets, private feedback and in-app inbox.
+- **Workshop:** member-scoped bookings, bays, job cards, stage transitions, technicians, service catalogue, draft estimates, invoice register, inventory ledger, parts-return records and private customer feedback.
+- **Admin:** platform overview, customer/profile list, booking list, workshop applications, partner directory, service category management, vehicle catalogue management, private review moderation, support tickets, analytics and audit log views.
 
-## Workshop data
-The goal is 30,000+ genuine records, not a fabricated count. The repository includes an OSM collector and a source-attributed CSV importer. The OSM collector may return fewer than 30,000 named automotive POIs because mapping coverage varies. For the 30k+ target, obtain a written license from a commercial data supplier if open data is insufficient. See [DATA_SOURCING.md](DATA_SOURCING.md).
+## Authentication and security
+- Email/password sign-in.
+- Registration collects full name and mobile number; the number is contact information only.
+- No phone OTP, SMS verification, or phone-based login.
+- Public signup cannot choose a privileged role. Workshop/admin access requires controlled provisioning and active workshop membership.
+- Row Level Security scopes customer and workshop records.
+- Never put a Supabase service-role key or secret in browser code or this repository.
 
-Never scrape or bulk-copy restricted Google Maps listings. Never claim a third-party listing is a QuickBay-verified partner. Ratings and review counts are shown only when supplied by an attributable source.
+## Backend and migrations
+The project uses Supabase for authentication and PostgreSQL data. Migrations `0001`–`0016` establish the core schema and additive workflows. Migration `0017_verified_partner_booking_requests.sql` adds server-side checks for customer booking requests and is pending application before the updated booking flow is enabled against the live database.
 
-## Run the OpenStreetMap collector
-```bash
-python scripts/fetch_osm_workshops.py --out osm-workshops.csv
-```
-The collector uses tiled Overpass queries with rate limiting and retry behaviour. Public Overpass endpoints can throttle or time out; a Geofabrik PBF extract is preferable for large-scale repeatable ingestion.
+See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for current backend status and migration instructions.
 
-## Import licensed records
-```bash
-npm install
-SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... \
-SOURCE_NAME="OpenStreetMap" SOURCE_LICENSE="ODbL-1.0" \
-SOURCE_ATTRIBUTION="© OpenStreetMap contributors" PUBLIC_DISPLAY_PERMITTED=true \
-node scripts/import-workshops.mjs ./osm-workshops.csv
-```
-Only run the import after verifying the source license and public display rights. Keep service-role credentials server-side.
+## Workshop discovery and booking rules
+QuickBay can show source-attributed public automotive listings and location-based discovery. A third-party map listing is not a QuickBay partner. Customers may use published contact details and directions, but in-app booking requests are restricted to approved, QuickBay-verified partners and their active service catalogue. A request is not a confirmed appointment until the workshop accepts it.
 
-## Payment boundary
-Payment processing remains intentionally disconnected. No real payment credentials are collected and demo checkout must never be represented as a real payment.
+The directory target is 30,000+ genuine records; this is a sourcing goal, not a current count. Do not invent workshops, phone numbers, ratings, locations or partner verification. Import only data with documented rights for storage, public display, commercial use and attribution. See [DATA_SOURCING.md](DATA_SOURCING.md).
+
+## Intentionally disabled
+- Payment gateway activation and payment collection.
+- Paid third-party services or subscriptions.
+- Outbound SMS, email and push notifications.
+- Publishing/importing customer or workshop records without permission.
+- Destructive database changes.
+
+## Validation and release status
+- Existing Vercel preview builds reached `READY` before the latest booking changes.
+- Static JavaScript syntax checks were previously reported as passing for the inline application scripts and `workflows.js`.
+- Full interactive browser QA and authenticated end-to-end testing remain outstanding.
+- Apply migration 0017 and test customer/workshop accounts before promoting the release to production.
