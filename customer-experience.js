@@ -38,7 +38,7 @@
  window.qbIndiaCarCatalogue=CARS;
  window.qbToggleCustomModel=function(value){const wrap=document.getElementById('qbCustomModelWrap'),field=document.getElementById('qbCustomModel');if(wrap)wrap.style.display=value==='__other__'?'grid':'none';if(field)field.required=value==='__other__';};
  window.qbUpdateVehicleAge=function(year){const el=document.getElementById('qbVehicleAge');if(el)el.textContent=year?'Approximate vehicle age: '+Math.max(0,new Date().getFullYear()-Number(year))+' years':'Select a manufacturing year';};
- window.qbUpdateVehicleModels=function(make){const el=document.getElementById('qbVehicleModel');if(el)el.innerHTML='<option value="">Select model</option>'+(CARS[make]||[]).map(x=>'<option value="'+qbSafe(x)+'">'+qbSafe(x)+'</option>').join('')+'<option value="__other__">My model is not listed</option>'};
+ window.qbUpdateVehicleModels=function(make){const el=document.getElementById('qbVehicleModel');if(el)el.innerHTML='<option value="">Select model</option>'+(CARS[make]||[]).map(x=>'<option value="'+qbSafe(x)+'">'+qbSafe(x)+'</option>').join('')+'<option value="__other__">My model is not listed</option>';window.qbToggleCustomModel('')};
  window.vehicleForm=function(){
   const makes=Object.keys(CARS).sort((a,b)=>a.localeCompare(b)),years=Array.from({length:new Date().getFullYear()-1989},(_,i)=>new Date().getFullYear()-i);
   modal('Add a vehicle','Choose your car brand, model and manufacturing year.',
