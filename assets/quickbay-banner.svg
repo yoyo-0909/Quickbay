@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="440" viewBox="0 0 1440 440" role="img" aria-labelledby="title desc">
+  <title id="title">QuickBay — Every bay. Every job. One platform.</title>
+  <desc id="desc">A dark, geometric QuickBay banner with a custom service-bay mark and route-inspired linework.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#080a0b"/>
+      <stop offset="1" stop-color="#171b1d"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a3ff5f"/>
+      <stop offset="1" stop-color="#d4ff9b"/>
+    </linearGradient>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0V44" fill="none" stroke="#ffffff" stroke-opacity=".055" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1440" height="440" rx="28" fill="url(#bg)"/>
+  <rect width="1440" height="440" rx="28" fill="url(#grid)"/>
+  <path d="M870 0H1440V440H1030C1110 335 1120 255 1040 180S900 90 870 0Z" fill="#a3ff5f" opacity=".045"/>
+  <g fill="none" stroke="#a3ff5f" stroke-opacity=".23" stroke-width="2">
+    <path d="M970 440C1010 350 1000 285 1070 220S1240 150 1440 185"/>
+    <path d="M1040 440C1080 360 1080 300 1140 255S1290 195 1440 220"/>
+    <path d="M1120 440C1160 375 1165 330 1215 290S1340 250 1440 265"/>
+  </g>
+  <g transform="translate(112 112)">
+    <rect x="0" y="0" width="88" height="88" rx="22" fill="url(#accent)"/>
+    <path d="M22 66V26H66V66M22 45H66M44 26V66" fill="none" stroke="#101510" stroke-width="7" stroke-linecap="square"/>
+    <path d="M33 66V54M55 66V54" stroke="#101510" stroke-width="7" stroke-linecap="square"/>
+  </g>
+  <text x="112" y="276" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="86" font-weight="800" letter-spacing="-4">QUICKBAY</text>
+  <rect x="115" y="301" width="74" height="5" rx="2.5" fill="url(#accent)"/>
+  <text x="112" y="350" fill="#d6dcda" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="500" letter-spacing="1">EVERY BAY. EVERY JOB. ONE PLATFORM.</text>
+  <text x="112" y="390" fill="#7e8984" font-family="Arial, Helvetica, sans-serif" font-size="15" letter-spacing="3">WORKSHOP DISCOVERY  /  SERVICE OPERATIONS  /  CONNECTED WORKFLOWS</text>
+  <g transform="translate(1210 78)" fill="none" stroke="#a3ff5f" stroke-width="3" opacity=".72">
+    <path d="M0 0H90V90H0Z"/>
+    <path d="M18 72V18H72V72M18 45H72M45 18V72"/>
+    <circle cx="45" cy="45" r="8" fill="#a3ff5f" stroke="none"/>
+  </g>
+  <text x="1210" y="205" fill="#a3ff5f" font-family="Arial, Helvetica, sans-serif" font-size="12" letter-spacing="2">HACKATHON BUILD</text>
+</svg>
