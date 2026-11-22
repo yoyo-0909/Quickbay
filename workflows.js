@@ -189,7 +189,7 @@ async function assignTechnician(jobId,technicianId){
 function rescheduleBookingForm(id){
  const b=bookings.find(x=>x.uuid===id);if(!b)return;
  modal('Reschedule request',qbSafe(b.id)+' · Choose a new preferred date and time. This is a request, not a confirmed slot.','<form data-booking-id="'+qbSafe(id)+'" onsubmit="saveReschedule(event,this.dataset.bookingId)"><div class="formgrid">'+
- '<label>Preferred date<input class="field" type="date" name="date" min="'+new Date().toISOString().slice(0,10)+'" required value="'+qbSafe(b.date||'')+'"></label>'+
+ '<label>Preferred date<input class="field" type="date" name="date" min="'+new Date().toISOString().slice(0,10)+'" required value="'+qbSafe(b.preferredAt?new Date(b.preferredAt).toISOString().slice(0,10):'')+'"></label>'+
  '<label>Preferred time<select class="field" name="time"><option value="09:00">Morning · 9 AM</option><option value="13:00">Afternoon · 1 PM</option><option value="17:00">Evening · 5 PM</option></select></label></div><button class="btn">Save new preference</button></form>');
 }
 async function saveReschedule(e,id){
