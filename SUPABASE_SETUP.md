@@ -17,6 +17,8 @@ The live database already contains the core schema from migrations `0001` throug
 - `0012_private_workshop_reviews.sql`: adds private customer feedback and admin moderation; reviews are not published.
 - `0013_booking_reschedule_and_fk_indexes.sql`: adds customer rescheduling permissions and the remaining support foreign-key indexes.
 - `0014_admin_catalogues.sql`: adds admin-managed service categories and an initially empty vehicle catalogue.
+- `0015_customer_estimate_response.sql`: adds private-schema customer approval / change-request responses for estimates made available in-app.
+- `0016_harden_estimate_response.sql`: rejects null or unsupported estimate response values.
 
 Do not reapply the original core migrations to an already-provisioned database. Apply future migrations in order and verify them before connecting new UI workflows.
 
