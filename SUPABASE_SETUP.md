@@ -22,6 +22,11 @@ The live database already contains the core schema from migrations `0001` throug
 
 Do not reapply the original core migrations to an already-provisioned database. Apply future migrations in order and verify them before connecting new UI workflows.
 
+## Verified-partner booking requests
+Migration `0017_verified_partner_booking_requests.sql` is a new pending migration for the partner-specific booking flow. Apply this migration after `0001`–`0016` and verify it before enabling the updated booking UI. It requires a selected workshop to be approved, QuickBay-verified and permitted for public display; a selected service must belong to that workshop and be active. Booking requests remain requests until the workshop confirms them. No slot is reserved automatically.
+
+Public OpenStreetMap and other third-party directory listings remain discovery-only. Customers can use their published contact details or directions, but those listings cannot receive in-app bookings unless the business completes partner onboarding and verification.
+
 ## Authentication rules
 - Email/password is the only authentication method.
 - Registration collects full name and mobile number.
