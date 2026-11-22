@@ -18,12 +18,12 @@ QuickBay is an India-focused automotive workshop marketplace and workshop operat
 - Email changes are not exposed in the profile editor because they require a separate confirmation flow.
 
 ## Application modules
-- Customer: profile, garage, vehicle updates, workshop discovery, booking requests, cancellation of eligible bookings, service tracking, service history, saved workshops, private support tickets, private feedback and in-app inbox.
+- Customer: profile, garage, vehicle updates, workshop discovery, booking requests, cancellation of eligible bookings, service tracking, service history, saved workshops, estimate approvals, invoice summaries, private support tickets, private feedback and in-app inbox.
 - Workshop: member-scoped bookings, bays, job cards, stage transitions, technicians, service catalogue, draft estimates, invoice register, inventory ledger, parts-return records and private customer feedback.
 - Admin: platform overview, customer/profile list, booking list, workshop applications, partner directory, service category management, vehicle catalogue management, private review moderation, support tickets, analytics and audit log views.
 
 ## Backend
-The Supabase project contains the core profiles, workshops, workshop membership, vehicles, services, bookings, bays, technicians, job cards, estimates, invoices, parts-return and audit tables. Migrations `0001`–`0005` established the core schema and security helpers. Migrations `0006`–`0014` add inventory, in-app notification storage, booking cancellation/rescheduling, estimate-item access, a private-schema inventory movement implementation, safer extension placement, RLS/index optimisations, private support, saved workshops, non-public feedback moderation and admin-managed catalogues.
+The Supabase project contains the core profiles, workshops, workshop membership, vehicles, services, bookings, bays, technicians, job cards, estimates, invoices, parts-return and audit tables. Migrations `0001`–`0005` established the core schema and security helpers. Migrations `0006`–`0016` add inventory, in-app notification storage, booking cancellation/rescheduling, estimate approvals, estimate-item access, a private-schema inventory movement implementation, safer extension placement, RLS/index optimisations, private support, saved workshops, non-public feedback moderation and admin-managed catalogues.
 
 See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for environment and migration notes.
 
