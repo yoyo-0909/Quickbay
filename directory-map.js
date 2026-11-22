@@ -7,7 +7,7 @@ window.qbDirectoryMarkers = [];
 explore = function () {
  return head('WORKSHOP DISCOVERY','Find a workshop near you','Search permitted workshop listings, inspect available details and view geocoded locations. No unverified business data is invented.','')+
  '<div class="notice" id="directoryNotice"><strong>Workshop directory.</strong> Loading permitted listings from QuickBay.</div>'+
- '<div class="searchbox"><input id="q" placeholder="Workshop, locality, service or PIN code" onkeydown="if(event.key===\\'Enter\\')loadWorkshopDirectory()"><button class="btn" type="button" onclick="loadWorkshopDirectory()">Search</button></div>'+
+ '<div class="searchbox"><input id="q" placeholder="Workshop, locality, service or PIN code" onkeydown="if(event.key===\'Enter\')loadWorkshopDirectory()"><button class="btn" type="button" onclick="loadWorkshopDirectory()">Search</button></div>'+
  '<div class="filters"><select id="serviceFilter"><option value="">All services</option><option value="car_repair">Car repair</option><option value="tyres">Tyres</option><option value="car_wash">Car wash</option></select><select id="ratingFilter"><option value="">Any rating</option><option value="3.5">3.5+ only</option><option value="4">4.0+ only</option></select><select id="sortFilter"><option value="name">Name</option><option value="rating">Highest rated</option></select></div>'+
  '<div class="qb-directory-layout"><section><div id="results"><div class="card">Loading permitted workshops…</div></div></section><aside class="qb-map-panel"><div class="row" style="margin-bottom:10px"><div><div class="sectiontitle">Workshop map</div><div class="muted">Tiruvallur pilot area · India</div></div><span class="tag" id="mapCount">0 locations</span></div><div id="workshopMap" class="qb-map" role="region" aria-label="Interactive workshop map"><div class="qb-map-fallback"><span class="qb-map-road qb-road-one"></span><span class="qb-map-road qb-road-two"></span><span class="qb-map-pin">⌖</span><b>Loading map</b><small>Map tiles will appear when the map service is reachable.</small></div></div><div class="muted" style="margin-top:9px">Map data © OpenStreetMap contributors. Pins appear only for listings with saved coordinates.</div></aside></div>'+
  '<div class="qb-partner-cta"><div><b>Own or manage an automotive workshop?</b><div class="muted">Apply to join QuickBay. Your application stays private until reviewed.</div></div><button class="btn light" type="button" onclick="qbOpenPartnerApplication()">Register workshop</button></div>';
@@ -36,7 +36,7 @@ function qbInitDirectoryMap(rows){
  }).addTo(map);
  geocoded.forEach(w=>{
   const marker=window.L.marker([Number(w.latitude),Number(w.longitude)]).addTo(map);
-  marker.bindPopup('<b>'+qbSafe(w.name)+'</b><br>'+qbSafe([w.locality,w.city,w.district].filter(Boolean).join(', '))+'<br><button type="button" class="qb-map-detail" onclick="qbOpenWorkshopDetails(\\''+qbSafe(w.id)+'\\')">View details</button>');
+  marker.bindPopup('<b>'+qbSafe(w.name)+'</b><br>'+qbSafe([w.locality,w.city,w.district].filter(Boolean).join(', '))+'<br><button type="button" class="qb-map-detail" onclick="qbOpenWorkshopDetails(\''+qbSafe(w.id)+'\')">View details</button>');
   window.qbDirectoryMarkers.push(marker);
  });
  if(geocoded.length===1)map.setView([Number(geocoded[0].latitude),Number(geocoded[0].longitude)],14);
