@@ -316,7 +316,7 @@ async function saveProfile(e){
 }
 async function qbLoadCustomerJobs(){
  if(!authUser||!supabaseClient)return;
- const {data,error}=await supabaseClient.from('job_cards').select('id,job_code,stage,reported_issue,checked_in_at,expected_completion,delivered_at,workshops(name),vehicles(registration_number,manufacturer,model),job_status_history(new_stage,note,created_at)').eq('customer_id',authUser.id).order('created_at',{ascending:false});
+ const {data,error}=await supabaseClient.from('job_cards').select('id,job_code,booking_id,workshop_id,stage,reported_issue,checked_in_at,expected_completion,delivered_at,workshops(name),vehicles(registration_number,manufacturer,model),job_status_history(new_stage,note,created_at)').eq('customer_id',authUser.id).order('created_at',{ascending:false});
  if(error){console.warn('QuickBay service history:',error.message);qbCustomerJobs=[];return}
  qbCustomerJobs=data||[];
 }
@@ -552,4 +552,5 @@ function toggleSavedWorkshop(id){let saved=store.get('saved_workshops',[]);saved
 </script>
 <script src="/workflows.js"></script>
 <script src="/support.js"></script>
+<script src="/reviews.js"></script>
 </body></html>
