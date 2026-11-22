@@ -25,7 +25,7 @@ The preview reference above is a previously created Vercel preview. It is not a 
 - Never put a Supabase service-role key or secret in browser code or this repository.
 
 ## Backend and migrations
-The project uses Supabase for authentication and PostgreSQL data. Migrations `0001`–`0016` establish the core schema and additive workflows. Migration `0017_verified_partner_booking_requests.sql` adds server-side checks for customer booking requests and is pending application before the updated booking flow is enabled against the live database.
+The project uses Supabase for authentication and PostgreSQL data. Migrations `0001`–`0016` establish the core schema and additive workflows. Migration `0017_verified_partner_booking_requests.sql` has been applied to the connected Supabase project and its function permissions and partner-verification checks have been verified. Authenticated customer/workshop end-to-end testing is still required before production release.
 
 See [SUPABASE_SETUP.md](SUPABASE_SETUP.md) for current backend status and migration instructions.
 
