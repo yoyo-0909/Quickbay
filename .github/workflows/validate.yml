@@ -1,0 +1,42 @@
+name: Validate prototype
+
+on:
+  push:
+    branches:
+      - main
+      - work/quickbay-completion
+  pull_request:
+    branches:
+      - main
+      - work/quickbay-completion
+
+permissions:
+  contents: read
+
+jobs:
+  javascript-syntax:
+    name: JavaScript syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate JavaScript files
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=( *.js scripts/*.mjs )
+          if (( ${#files[@]} == 0 )); then
+            echo "No JavaScript files found."
+            exit 0
+          fi
+          for file in "${files[@]}"; do
+            echo "Checking ${file}"
+            node --check "${file}"
+          done
