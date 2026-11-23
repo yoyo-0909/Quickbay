@@ -40,6 +40,16 @@
   console.error('QuickBay async error:',event.reason);
   if(typeof window.toast==='function')window.toast('A request did not finish. Please retry.');
  });
+ window.qbClearPrivateState=function(){
+  vehicles=[];bookings=[];
+  qbWorkshopId=null;qbWorkshopInfo=null;qbWorkshopBookings=[];qbWorkshopJobs=[];qbWorkshopBays=[];qbTechnicians=[];qbWorkshopServices=[];
+  qbCustomerJobs=[];qbAdmin={profiles:[],bookings:[],applications:[],workshops:[],categories:[],audit:[]};
+  qbInventoryItems=[];qbInventoryMovements=[];qbEstimates=[];qbInvoices=[];qbPartsReturns=[];
+  qbCustomerNotifications=[];qbCustomerInvoices=[];qbCustomerEstimates=[];
+  qbCustomerReviews=[];qbWorkshopReviews=[];qbAdminReviews=[];
+  qbSavedWorkshops=[];qbSupportTickets=[];qbAdminSupportTickets=[];
+  store.set('saved_workshops',[]);
+ };
  window.go=go;window.previewAsGuest=previewAsGuest;window.setAuthTab=setAuthTab;window.submitAuth=submitAuth;
  window.loadWorkshopDirectory=loadWorkshopDirectory;window.qbOpenWorkshopDetails=qbOpenWorkshopDetails;
  window.qbFocusWorkshop=qbFocusWorkshop;window.qbOpenPartnerApplication=qbOpenPartnerApplication;
