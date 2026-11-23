@@ -19,8 +19,8 @@ const pass = message => console.log('PASS:', message);
 
 for (const file of jsFiles) {
   const result = spawnSync(process.execPath, ['--check', file], { encoding: 'utf8' });
-  if (result.status !== 0) fail(\`JavaScript syntax: \${path.relative(root, file)}\\n\${result.stderr || result.stdout}\`);
-  else pass(\`JavaScript syntax: \${path.relative(root, file)}\`);
+  if (result.status !== 0) fail('JavaScript syntax: ' + path.relative(root, file) + '\n' + (result.stderr || result.stdout));
+  else pass('JavaScript syntax: ' + path.relative(root, file));
 }
 
 const htmlPath = path.join(root, 'index.html');
@@ -35,15 +35,15 @@ if (!fs.existsSync(htmlPath)) {
     const code = match[2] || '';
     const src = attrs.match(/\bsrc\s*=\s*["']([^"']+)["']/i)?.[1];
     if (src) {
-      if (src.startsWith('/') && !fs.existsSync(path.join(root, src.slice(1)))) fail(\`Local script asset exists: \${src}\`);
+      if (src.startsWith('/') && !fs.existsSync(path.join(root, src.slice(1)))) fail('Local script asset exists: ' + src);
       continue;
     }
     if (!code.trim()) continue;
     inlineCount++;
-    try { new vm.Script(code, { filename: \`index.html:inline-\${index + 1}.js\` }); }
-    catch (error) { fail(\`Inline script \${index + 1} parses: \${error.message}\`); }
+    try { new vm.Script(code, { filename: 'index.html:inline-' + (index + 1) + '.js' }); }
+    catch (error) { fail('Inline script ' + (index + 1) + ' parses: ' + error.message); }
   }
-  pass(\`Parsed \${inlineCount} inline script block(s) and checked local script assets\`);
+  pass('Parsed ' + inlineCount + ' inline script block(s) and checked local script assets');
 
   const workflowPath = path.join(root, 'workflows.js');
   if (fs.existsSync(workflowPath)) {
@@ -58,8 +58,8 @@ if (!fs.existsSync(htmlPath)) {
 }
 
 if (failures) {
-  console.error(\`\\nValidation failed with \${failures} issue(s).\`);
+  console.error('\nValidation failed with ' + failures + ' issue(s).');
   process.exitCode = 1;
 } else {
-  console.log('\\nQuickBay static validation completed successfully.');
+  console.log('\nQuickBay static validation completed successfully.');
 }
