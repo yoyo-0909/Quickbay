@@ -22,6 +22,17 @@ qbLoadWorkshopContext=async function(){
  if(!tasks[3].error)qbInvoices=tasks[3].data||[];
  if(!tasks[4].error)qbPartsReturns=tasks[4].data||[];
 };
+async function qbLoadCustomerJobs(){
+ qbCustomerJobs=[];
+ if(!authUser||!supabaseClient)return;
+ const {data,error}=await supabaseClient.from('job_cards')
+  .select('id,job_code,booking_id,workshop_id,vehicle_id,customer_id,stage,delivered_at,created_at,reported_issue,vehicles(manufacturer,model,registration_number),workshops(name)')
+  .eq('customer_id',authUser.id)
+  .order('created_at',{ascending:false})
+  .limit(200);
+ if(error){console.warn('Customer job history: '+error.message);return}
+ qbCustomerJobs=data||[];
+}
 async function qbLoadCustomerEstimates(){
  qbCustomerEstimates=[];if(!authUser||!supabaseClient)return;
  const ids=qbCustomerJobs.map(j=>j.id);if(!ids.length)return;
@@ -44,9 +55,12 @@ const qbCompleteAuthBase=completeAuth;
 completeAuth=async function(user){
  await qbCompleteAuthBase(user);
  if(!authUser||!supabaseClient)return;
- await qbLoadCustomerNotifications();
- await qbLoadCustomerInvoices();
- await qbLoadCustomerEstimates();
+ await qbLoadCustomerJobs();
+ await Promise.all([
+  qbLoadCustomerNotifications(),
+  qbLoadCustomerInvoices(),
+  qbLoadCustomerEstimates()
+ ]);
  render();
 };
 menus.workshop.splice(6,0,['Service Catalogue','⚙']);
