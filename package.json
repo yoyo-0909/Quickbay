@@ -2,6 +2,12 @@
   "name": "quickbay",
   "private": true,
   "type": "module",
-  "scripts": { "import:workshops": "node scripts/import-workshops.mjs" },
-  "dependencies": { "@supabase/supabase-js": "^2.57.0", "csv-parse": "^6.1.0" }
+  "scripts": {
+    "import:workshops": "node scripts/import-workshops.mjs",
+    "test": "node scripts/validate-project.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
+    "csv-parse": "^6.1.0"
+  }
 }
