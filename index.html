@@ -194,6 +194,18 @@ td{color:#464756}
  .topright{gap:8px}
  .account-menu{right:0;top:calc(100% + 9px)}
 }
+
+/* Smooth, coordinated startup loader motion */
+.loader-orbit{animation:qb-orbit 12s linear infinite;will-change:transform}
+.loader-orbit:before{animation:qb-orbit 18s linear infinite reverse;will-change:transform}
+.loader-tire{animation:qb-tire-motion 2.8s cubic-bezier(.45,0,.55,1) infinite;transform-origin:50% 50%;will-change:transform;backface-visibility:hidden}
+.orbit-dot{animation:qb-dot-pulse 2.8s ease-in-out infinite;will-change:transform,opacity}
+.orbit-spark{animation:qb-spark 2.4s ease-in-out infinite;will-change:transform,opacity}
+.loader-progress span{animation:qb-progress 2s cubic-bezier(.4,0,.2,1) infinite;will-change:transform}
+@keyframes qb-tire-motion{0%,100%{transform:rotate(0deg) scale(.96)}50%{transform:rotate(180deg) scale(1.025)}}
+@keyframes qb-dot-pulse{0%,100%{transform:scale(.82);opacity:.65}50%{transform:scale(1.12);opacity:1}}
+@keyframes qb-progress{0%{transform:translateX(-110%)}100%{transform:translateX(365%)}}
+@media(prefers-reduced-motion:reduce){.loader-orbit,.loader-orbit:before,.loader-tire,.orbit-dot,.orbit-spark,.loader-progress span{animation:none!important}}
 </style><link rel="stylesheet" href="/directory-map.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head><body>
