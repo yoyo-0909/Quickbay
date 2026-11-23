@@ -492,11 +492,19 @@ function newJob(){
 async function saveJob(e){
  e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const b=qbWorkshopBookings.find(x=>x.id===d.booking);if(!b)return;
  const code='QB-J-'+Date.now().toString().slice(-8);
- const {data,error}=await supabaseClient.from('job_cards').insert({job_code:code,workshop_id:qbWorkshopId,booking_id:b.id,vehicle_id:b.vehicle_id,customer_id:b.customer_id,reported_issue:d.issue||b.customer_notes||null,stage:'check_in',bay_id:d.bay||null,expected_completion:d.expected?new Date(d.expected).toISOString():null}).select('id').single();
+ const {data,error}=await supabaseClient.from('job_cards').insert({job_code:code,workshop_id:qbWorkshopId,booking_id:b.id,vehicle_id:b.vehicle_id,customer_id:b.customer_id,reported_issue:d.issue||b.customer_notes||null,stage:'check_in',bay_id:null,expected_completion:d.expected?new Date(d.expected).toISOString():null}).select('id').single();
  if(error){toast(qbErr(error));return}
- if(d.bay)await supabaseClient.from('bays').update({status:'occupied'}).eq('id',d.bay).eq('workshop_id',qbWorkshopId);
- await supabaseClient.from('bookings').update({status:'confirmed'}).eq('id',b.id).eq('workshop_id',qbWorkshopId);
- closeModal();await qbRefreshWorkshop();toast('Job card created: '+code);
+ if(d.bay){
+  const allocation=await supabaseClient.rpc('allocate_bay',{p_job_id:data.id,p_bay_id:d.bay});
+  if(allocation.error){
+   const rollback=await supabaseClient.from('job_cards').delete().eq('id',data.id).eq('workshop_id',qbWorkshopId);
+   toast(rollback.error?'Bay allocation failed and the draft job card could not be removed: '+qbErr(allocation.error):qbErr(allocation.error));
+   await qbRefreshWorkshop();return;
+  }
+ }
+ const bookingUpdate=await supabaseClient.from('bookings').update({status:'confirmed',updated_at:new Date().toISOString()}).eq('id',b.id).eq('workshop_id',qbWorkshopId);
+ closeModal();await qbRefreshWorkshop();
+ toast(bookingUpdate.error?'Job card created, but the booking status could not be updated: '+qbErr(bookingUpdate.error):'Job card created: '+code);
 }
 async function advanceJob(id){
  const j=qbWorkshopJobs.find(x=>x.id===id);if(!j||j.stage==='delivered')return;
