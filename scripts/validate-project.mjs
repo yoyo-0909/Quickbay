@@ -51,7 +51,8 @@ if (!fs.existsSync(htmlPath)) {
     const loadJobs = workflow.indexOf('async function qbLoadCustomerJobs()');
     const loadEstimates = workflow.indexOf('async function qbLoadCustomerEstimates()');
     const authCall = workflow.indexOf('await qbLoadCustomerJobs()');
-    if (loadJobs < 0 || loadEstimates < 0 || authCall < 0 || authCall > workflow.indexOf('await qbLoadCustomerEstimates()')) {
+    const estimatesCall = workflow.indexOf('qbLoadCustomerEstimates()', authCall);
+    if (loadJobs < 0 || loadEstimates < 0 || authCall < 0 || estimatesCall < 0 || authCall > estimatesCall) {
       fail('Customer job history is loaded before customer estimates');
     } else pass('Customer job history loader is wired before estimate loading');
   }
