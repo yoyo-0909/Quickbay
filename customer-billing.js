@@ -33,6 +33,9 @@ function customerEstimatesPage(){
 }
 async function respondToEstimate(id,response){
  const {error}=await supabaseClient.rpc('respond_to_estimate',{p_estimate_id:id,p_response:response});
- if(error){toast(qbErr(error));return}
+ if(error){
+  if(response==='changes_requested'&&(error.code==='23514'||/estimates_status_check/i.test(error.message||''))){toast('Request changes is blocked by the current database status constraint. A database migration is required.');return}
+  toast(qbErr(error));return
+ }
  await qbLoadCustomerEstimates();render();toast(response==='approved'?'Estimate approved.':'Changes requested.');
 }
