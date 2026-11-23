@@ -168,13 +168,17 @@ function estimateForm(){
 }
 async function saveEstimate(e){
  e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const qty=Number(d.quantity),price=Number(d.price),tax=Number(d.tax);
- if(qty<=0||price<0||tax<0){toast('Check quantity, price and tax values.');return}
+ if(!Number.isFinite(qty)||qty<=0||!Number.isFinite(price)||price<0||!Number.isFinite(tax)||tax<0||tax>100){toast('Enter a valid quantity, price and tax rate.');return}
  const subtotal=qty*price,taxTotal=subtotal*tax/100,total=subtotal+taxTotal;
  const job=qbWorkshopJobs.find(j=>j.id===d.job);const version=1+qbEstimates.filter(x=>x.job_id===d.job).reduce((m,x)=>Math.max(m,Number(x.version)||0),0);
  const {data,error}=await supabaseClient.from('estimates').insert({job_id:d.job,version,status:'draft',subtotal,tax_total:taxTotal,discount:0,total,created_by:authUser.id}).select('id').single();
  if(error){toast(qbErr(error));return}
  const item=await supabaseClient.from('estimate_items').insert({estimate_id:data.id,item_type:d.type||'labour',description:d.description.trim(),quantity:qty,unit_price:price,tax_rate:tax});
- if(item.error){toast('Estimate header saved, but line item failed: '+qbErr(item.error));return}
+ if(item.error){
+  const cleanup=await supabaseClient.from('estimates').delete().eq('id',data.id);
+  toast(cleanup.error?'Estimate line item failed and the draft could not be cleaned up: '+qbErr(item.error):'Estimate was not saved because its line item failed: '+qbErr(item.error));
+  return;
+ }
  closeModal();await qbRefreshWorkshop();toast('Draft estimate saved for '+(job?.job_code||'job card')+'.');
 }
 function invoicesPage(){
