@@ -40,3 +40,6 @@ jobs:
             echo "Checking ${file}"
             node --check "${file}"
           done
+
+      - name: Validate inline scripts and local assets
+        run: node scripts/validate-project.mjs
